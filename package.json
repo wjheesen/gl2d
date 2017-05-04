@@ -1,0 +1,31 @@
+{
+  "name": "gl2d",
+  "version": "0.0.0",
+  "description": "2D graphics package for WebGL",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "author": "wjheesen",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wjheesen/gl2d"
+  },
+  "keywords": [
+    "WebGL",
+    "2D",
+    "graphics",
+    "TypeScript"
+  ],
+  "dependencies": {
+    "gulp-shadify": "^0.0.2"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.2",
+    "@types/gulp-rename": "0.0.32",
+    "@types/node": "^7.0.15",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-structify": "^1.1.8",
+    "typescript": "^2.2.2"
+  }
+}

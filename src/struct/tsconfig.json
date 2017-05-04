@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "noUnusedLocals": false,
+    "outDir": "../../lib/struct"
+  },
+  "include": ["./*"],
+  "exclude": ["./*.template.ts"]
+}
