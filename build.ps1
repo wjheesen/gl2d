@@ -41,11 +41,7 @@ function Update-Index(){
         return $_.FullName -ne "$src\struct\util.ts" -and !@("src", "shader").Contains($_.Directory.Name)
     } | 
     ForEach-Object {
-        $file = $_.BaseName
-        $directory = $_.Directory.Name
-        if(!@("src", "shader").Contains($directory)){
-            "export * from './$directory/$file'" >> $index
-        }
+        "export * from './$($_.Directory.Name)/$($_.BaseName)'" >> $index
     }
 }
 
