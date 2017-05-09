@@ -40,6 +40,7 @@ export class Surface<R extends Renderer> {
         this.drawingBuffer = drawingBuffer;
         this.clientRect = drawingBuffer.getBoundingClientRect();
         this.renderer = renderer;
+        this.renderer.onSurfaceCreated();
     }
 
     /**
@@ -51,10 +52,10 @@ export class Surface<R extends Renderer> {
 
     /**
      * Resizes this surface if the specified width and height differ from the current width and height.
-     * @param width the width to set on the surface.
-     * @param height the height to set on the surface.
+     * @param width the width to set on the surface. Defaults to the client width of the drawing buffer.
+     * @param height the height to set on the surface. Defaults to the client height of the drawing buffer.
      */
-    resize(width: number, height: number) {
+    resize(width = this.drawingBuffer.clientWidth, height = this.drawingBuffer.clientHeight) {
         // If width or height has changed
         if (this.drawingBuffer.width !== width || this.drawingBuffer.height !== height) {
             // Resize canvas to specified dimensions

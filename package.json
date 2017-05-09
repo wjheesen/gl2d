@@ -1,6 +1,6 @@
 {
   "name": "gl2d",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "2D graphics package for WebGL",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -26,6 +26,6 @@
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
     "gulp-shadify": "^0.0.5",
-    "typescript": "^2.2.2"
+    "typescript": "^2.3.2"
   }
 }
