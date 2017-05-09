@@ -3,7 +3,7 @@
 /**
   * Holds the three indices for a triangle.
   */
-class IndexTuple extends Template<Uint16Array> {
+export class IndexTuple extends Template<Uint16Array> {
     /**
      * The index of the first triangle vertex.
      */

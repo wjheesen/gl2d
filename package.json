@@ -1,6 +1,6 @@
 {
   "name": "gl2d",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "2D graphics package for WebGL",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -16,16 +16,14 @@
     "graphics",
     "TypeScript"
   ],
-  "dependencies": {
-    "gulp-shadify": "^0.0.2"
-  },
   "devDependencies": {
     "@types/gulp": "^4.0.2",
     "@types/gulp-rename": "0.0.32",
     "@types/node": "^7.0.15",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
-    "gulp-structify": "^1.1.8",
+    "gulp-structify": "^1.1.9",
+    "gulp-shadify": "^0.0.5",
     "typescript": "^2.2.2"
   }
 }

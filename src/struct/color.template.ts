@@ -1,5 +1,5 @@
 ﻿import Template from 'gulp-structify/template';
-import * as ColorF from './colorf';
+import ColorF from './colorf';
 import { randomInt, ArgbRegex, pad } from "./util"
 
 /**

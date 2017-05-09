@@ -1,5 +1,6 @@
 ﻿import Template from 'gulp-structify/template'
-import * as Point from './point'
+import Point from './point'
+import Vec2 from './vec2'
 
 /**
  * A rectangle with (left, top, right, bottom) boundaries.
@@ -325,9 +326,16 @@ class Rect extends Template<Float32Array> {
     }
 
     /**
+     * Insets the boundaries of this Rect by the specified vector.
+     */
+    inset(vec: Vec2) {
+        this.inset$(vec.x, vec.y);
+    }
+
+    /**
      * Insets the boundaries of this Rect by the vector (dx,dy).
      */
-    inset(dx: number, dy: number) {
+    inset$(dx: number, dy: number) {
         this.left += dx;
         this.top -= dy;
         this.right -= dx;
@@ -335,9 +343,16 @@ class Rect extends Template<Float32Array> {
     }
 
     /**
+     * Offsets the boundaries of this Rect by the specified vector.
+     */
+    offset(vec: Vec2) {
+        this.offset$(vec.x, vec.y);
+    }
+
+    /**
      * Offsets the boundaries of this Rect by the vector (dx,dy).
      */
-    offset(dx: number, dy: number) {
+    offset$(dx: number, dy: number) {
         this.left += dx;
         this.top += dy;
         this.right += dx;
@@ -355,7 +370,7 @@ class Rect extends Template<Float32Array> {
         let cx = this.centerX();
         let cy = this.centerY();
         // Translate to origin
-        this.offset(-cx, -cy);
+        this.offset$(-cx, -cy);
         // Apply horizontal scale
         this.left *= sx;
         this.right *= sx;
@@ -363,7 +378,7 @@ class Rect extends Template<Float32Array> {
         this.bottom *= sy;
         this.top *= sy;
         // Translate back to center
-        this.offset(cx, cy);
+        this.offset$(cx, cy);
     }
 
     /**

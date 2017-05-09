@@ -1,10 +1,10 @@
 ﻿import Template from 'gulp-structify/template'
-import * as Point from './point'
+import Point from './point'
 
 /**
  * The line from (x1,y1) to (x2,y2).
  */
-class Line extends Template<Float32Array> {
+export class Line extends Template<Float32Array> {
 
     /**
      * The X coordinate of the point at the start of this Line.

@@ -1,10 +1,10 @@
 ﻿import Template from 'gulp-structify/template'
-import * as Rect from './rect';
+import Rect from './rect';
 
 /**
  * A 4x4 matrix.
  */
-class Mat4 extends Template<Float32Array>{
+export class Mat4 extends Template<Float32Array>{
     /**
      * The first entry in the first column of this Mat4.
      */

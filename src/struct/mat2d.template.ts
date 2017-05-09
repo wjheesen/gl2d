@@ -1,7 +1,7 @@
 ﻿import Template from 'gulp-structify/template'
-import * as Point from './point'
-import * as Vec2 from './vec2'
-import * as Rect  from './rect'
+import Point from './point'
+import Vec2 from './vec2'
+import Rect  from './rect'
 
 /**
  * Scale to fit options for a rect-to-rect matrix transformation.

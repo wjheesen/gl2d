@@ -1,5 +1,5 @@
 ﻿import Template from 'gulp-structify/template'
-import * as Point from './point';
+import Point from './point';
 
 /**
  * A two-dimensional vector with (x,y) components.
@@ -50,6 +50,14 @@ class Vec2 extends Template<Float32Array> {
      */
     cross(other: Vec2): number {
         return (this.x * other.y) - (other.x * this.y);
+    }
+
+    /**
+     * Inverts this Vec2.
+     */
+    invert(){
+        this.x = -this.x;
+        this.y = -this.y;
     }
 
     /**
