@@ -1,13 +1,13 @@
-﻿import Point from '../struct/point'
-import Vec2 from '../struct/vec2'
-import Rect from '../struct/rect'
-import Mat2d from '../struct/mat2d'
-import Mesh from './mesh'
+﻿import {Point} from'../struct/point'
+import {Vec2} from '../struct/vec2'
+import {Rect} from '../struct/rect'
+import {Mat2d} from '../struct/mat2d'
+import {Mesh} from './mesh'
 
 /**
  * Shape determined by matrix transformation of a mesh.
  */
-class Shape {
+export class Shape {
 
     /**
      * Contains the vertex and index data for this shape.
@@ -114,5 +114,3 @@ class Shape {
         this.inverse.invert();
     }
 }
-
-export default Shape;

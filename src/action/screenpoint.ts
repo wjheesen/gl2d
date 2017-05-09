@@ -1,6 +1,4 @@
-interface ScreenPoint {
+export interface ScreenPoint {
     clientX: number,
     clientY: number
 }
-
-export default ScreenPoint;

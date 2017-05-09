@@ -1,5 +1,5 @@
-﻿import Template from 'gulp-structify/template'
-import Rect from './rect';
+﻿import {Template} from'gulp-structify/template'
+import {Rect} from './rect';
 
 /**
  * A 4x4 matrix.

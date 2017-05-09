@@ -1,12 +1,12 @@
-import Point from '../struct/point';
-import Vec2 from '../struct/vec2';
-import Rect from '../struct/rect';
-import Mat4 from '../struct/mat4'
+import {Point} from '../struct/point';
+import {Vec2} from '../struct/vec2';
+import {Rect} from '../struct/rect';
+import {Mat4} from '../struct/mat4'
 
 /**
  * Defines an orthographic projection from target space to clip space.
  */
-class Camera {
+export class Camera {
 
     /**
      * The area this camera is targeting.
@@ -208,5 +208,3 @@ class Camera {
         this.matrix.ortho(this.view, 0.1, 10)
     }
 }
-
-export default Camera;

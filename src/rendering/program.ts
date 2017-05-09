@@ -1,6 +1,6 @@
 import { UniformLocations, AttribLocations } from './util'
 
-abstract class Program<U extends UniformLocations, A extends AttribLocations>{
+export abstract class Program<U extends UniformLocations, A extends AttribLocations>{
 
     /**
      * The location of this program in WebGL.
@@ -23,6 +23,4 @@ abstract class Program<U extends UniformLocations, A extends AttribLocations>{
     abstract bind(gl: WebGLRenderingContext): void;
 }
 
-export default Program;
-
-export type Program_ = Program<UniformLocations, AttribLocations>;
+export type _Program = Program<UniformLocations, AttribLocations>;

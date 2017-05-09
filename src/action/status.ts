@@ -1,7 +1,7 @@
 /**
  * The status of an action.
  */
-const enum Status {
+export const enum Status {
     /**
      * The action has just begun.
      */
@@ -18,6 +18,4 @@ const enum Status {
      * The action has left the boundaries of the canvas.
      */
     Leave
-};
-
-export default Status;
+}

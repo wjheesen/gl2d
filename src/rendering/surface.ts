@@ -1,15 +1,15 @@
-import Renderer from './renderer'
-import Point from '../struct/point'
-import Rect from '../struct/rect'
-import ScreenPoint from '../action/screenpoint'
-import Status from '../action/status'
-import MouseAction from '../action/mouse'
-import TouchAction from '../action/touch'
+import {Renderer} from './renderer'
+import {Point} from '../struct/point'
+import {Rect} from '../struct/rect'
+import {ScreenPoint} from '../action/screenpoint'
+import {Status} from '../action/status'
+import {MouseAction} from '../action/mouse'
+import {TouchAction} from '../action/touch'
 
 /**
  * A rendering surface linked to an HTMLCanvasElement (the drawing buffer).
  */
-class Surface<R extends Renderer> {
+export class Surface<R extends Renderer> {
 
     /**
      * The drawing buffer for this surface.
@@ -269,5 +269,3 @@ class Surface<R extends Renderer> {
     }
 
 };
-
-export default Surface;

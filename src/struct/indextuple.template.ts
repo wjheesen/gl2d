@@ -1,4 +1,4 @@
-﻿import Template from 'gulp-structify/template'
+﻿import {Template} from'gulp-structify/template'
 
 /**
   * Holds the three indices for a triangle.

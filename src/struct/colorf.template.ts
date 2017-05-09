@@ -1,5 +1,5 @@
-﻿import Template from 'gulp-structify/template'
-import Color from './color';
+﻿import {Template} from'gulp-structify/template'
+import {Color} from './color';
 import { ArgbRegex, pad } from './util';
 
 /**

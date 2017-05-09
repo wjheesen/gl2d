@@ -1,8 +1,8 @@
-import Mesh from '../graphics/mesh';
-import Program from '../rendering/program';
-import Line from '../struct/line';
-import ColorF from '../struct/colorf';
-import Mat4 from '../struct/mat4';
+import {Mesh} from '../graphics/mesh';
+import {Program} from '../rendering/program';
+import {Line} from '../struct/line';
+import {ColorF} from '../struct/colorf';
+import {Mat4} from '../struct/mat4';
 import * as Util from '../rendering/util';
 import * as Shader from '../shader/line';
 

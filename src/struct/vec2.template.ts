@@ -1,5 +1,5 @@
-﻿import Template from 'gulp-structify/template'
-import Point from './point';
+﻿import {Template} from 'gulp-structify/template'
+import {Point} from './point';
 
 /**
  * A two-dimensional vector with (x,y) components.

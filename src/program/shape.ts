@@ -1,10 +1,10 @@
-import Program from '../rendering/program';
-import Mat2d from '../struct/mat2d'
-import ColorF from '../struct/colorf'
-import Mat4 from '../struct/mat4'
-import Vertex from '../struct/vertex'
-import IndexTuple from '../struct/indextuple'
-import Mesh from '../graphics/mesh'
+import {Program} from '../rendering/program';
+import {Mat2d} from '../struct/mat2d'
+import {ColorF} from '../struct/colorf'
+import {Mat4} from '../struct/mat4'
+import {Vertex} from '../struct/vertex'
+import {IndexTuple} from '../struct/indextuple'
+import {Mesh} from '../graphics/mesh'
 import * as Shader from '../shader/shape';
 import * as Util from '../rendering/util';
 

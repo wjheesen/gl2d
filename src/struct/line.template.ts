@@ -1,5 +1,5 @@
-﻿import Template from 'gulp-structify/template'
-import Point from './point'
+﻿import {Template} from'gulp-structify/template'
+import {Point} from './point'
 
 /**
  * The line from (x1,y1) to (x2,y2).

@@ -1,6 +1,6 @@
-import Template from 'gulp-structify/template'
-import Rect from './rect'
-import Point from './point'
+import {Template} from 'gulp-structify/template'
+import {Rect} from './rect'
+import {Point} from './point'
 
  /**
   * Ellipse with semi axes (rx,ry) centered at the point (cx,cy).

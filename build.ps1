@@ -1,5 +1,5 @@
-$src = $PSScriptRoot + "/src";
-$lib = $PSScriptRoot + "/lib";
+$src = $PSScriptRoot + "\src";
+$lib = $PSScriptRoot + "\lib";
 
 function Initialize-Repository(){
     Set-Location $PSScriptRoot
@@ -12,7 +12,7 @@ function Update-Package(){
     # Clean lib folder
     Remove-Item $lib -Recurse -ErrorAction Ignore
     # Transpile src files
-    tsc --project ($src + "/tsconfig.json")
+    tsc --project "$src\tsconfig.json"
     # Copy package files to lib folder
     Copy-Item -Path package.json, README.md, LICENSE -Destination $lib
 }
@@ -20,7 +20,7 @@ function Update-Package(){
 
 function Update-Gulpfile(){
     Set-Location $PSScriptRoot
-    tsc
+    tsc 
 }
 
 function Update-Shaders(){
@@ -34,24 +34,19 @@ function Update-Structs(){
 }
 
 function Update-Index(){
-    Set-Location $src
-    $index = "./index.ts" 
+    $index = "$src\index.ts" 
     Remove-Item $index -ErrorAction Ignore
-    Get-ChildItem -Filter "*.ts" -Exclude "*.template.ts" -Recurse | ForEach-Object {
-        $file = $_.BaseName;
-        $directory = $_.Directory.Name;
-        if($directory -eq "struct"){
-            if($file -ne "util"){
-                # Capitalize file name to get name of default export
-                $name = Capitalize($file)
-                "import $name from './$directory/$file'" >> $index
-                "export { $name }" >> $index
-                }
-        } elseif(!@("src", "shader").Contains($directory)){
+    Get-ChildItem -Path $src -Filter "*.ts" -Exclude "*.template.ts" -Recurse | 
+    Where-Object {
+        return $_.FullName -ne "$src\struct\util.ts" -and !@("src", "shader").Contains($_.Directory.Name)
+    } | 
+    ForEach-Object {
+        $file = $_.BaseName
+        $directory = $_.Directory.Name
+        if(!@("src", "shader").Contains($directory)){
             "export * from './$directory/$file'" >> $index
         }
     }
-    Set-Location $PSScriptRoot
 }
 
 function Update-All(){

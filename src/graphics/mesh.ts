@@ -1,14 +1,14 @@
-﻿import IndexTuple from '../struct/indextuple'
-import Vec2 from '../struct/vec2'
-import Mat2d from '../struct/mat2d'
-import Point from '../struct/point'
-import Rect from '../struct/rect'
-import Vertex from '../struct/vertex'
+﻿import {IndexTuple} from'../struct/indextuple'
+import {Vec2} from '../struct/vec2'
+import {Mat2d} from '../struct/mat2d'
+import {Point} from '../struct/point'
+import {Rect} from '../struct/rect'
+import {Vertex} from '../struct/vertex'
 
 /**
  * Stores static polygon data that multiple shapes can share.
  */
-class Mesh {
+export class Mesh {
 
     /**
      * The polygon vertices.
@@ -269,5 +269,3 @@ class Mesh {
         return this.bounds.containsPoint$(x,y) && this.vertices.contains$(x,y);
     }
 }
-
-export default Mesh;

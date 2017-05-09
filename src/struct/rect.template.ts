@@ -1,6 +1,6 @@
-﻿import Template from 'gulp-structify/template'
-import Point from './point'
-import Vec2 from './vec2'
+﻿import {Template} from'gulp-structify/template'
+import {Point} from './point'
+import {Vec2} from './vec2'
 
 /**
  * A rectangle with (left, top, right, bottom) boundaries.

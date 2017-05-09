@@ -1,11 +1,10 @@
-import Camera from './camera'
-import {Program_} from './program'
-
+import {Camera} from './camera'
+import {_Program} from './program'
 
 /**
  * Helper class for rendering graphics with WebGL.
  */
-abstract class Renderer {
+export abstract class Renderer {
 
     /**
      * The WebGL rendering context used by this renderer.
@@ -20,7 +19,7 @@ abstract class Renderer {
     /**
      * The location of the currently bound program.
      */
-    private currentProgram: Program_;
+    private currentProgram: _Program;
 
     /**
      * Creates a new rendering object. 
@@ -58,7 +57,7 @@ abstract class Renderer {
      * Binds to the specified program, if not already bound.
      * @param program the program to bind.
      */
-    useProgram(program: Program_) {
+    useProgram(program: _Program) {
         // If the program is not already being used
         if (this.currentProgram !== program) {
             // Start using it
@@ -68,5 +67,3 @@ abstract class Renderer {
         }
     }
 };
-
-export default Renderer;
