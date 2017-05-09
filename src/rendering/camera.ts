@@ -11,8 +11,7 @@ export class Camera {
     /**
      * The area this camera is targeting.
      */
-    target = new Rect.Obj();
-
+    target: Rect.Obj;
     /**
      * The area of the target that is currently in view.
      */
@@ -31,7 +30,7 @@ export class Camera {
     /**
      * The current zoom setting for this camera.
      */
-    zoom: number;
+    zoom = 1;
 
     /**
      * The minimum zoom setting for this camera.
@@ -83,6 +82,8 @@ export class Camera {
         // Restore camera settings
         view.stretch(1 / this.zoom);
         view.offset(this.position);
+        // Update matrix to reflect changes
+        this.updateMatrix();
     }
 
     /**

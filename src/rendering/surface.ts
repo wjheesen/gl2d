@@ -44,10 +44,20 @@ export class Surface<R extends Renderer> {
     }
 
     /**
-     * Requests that the canvas be re-rendered.
+     * Requests that this surface be re-rendered.
      */
     requestRender() {
         this.hasRenderRequest = true;
+    }
+
+    /**
+     * Re-renders this surface if it has a render request.
+     */
+    onAnimationFrame(){
+        if(this.hasRenderRequest){
+            this.renderer.onDrawFrame();
+            this.hasRenderRequest = false;
+        }
     }
 
     /**
