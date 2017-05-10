@@ -1,11 +1,4 @@
-import {Status} from './status'
-
-export interface Action<E extends MouseEvent | TouchEvent> {
-    /**
-     * The status of this action: Start, Move, End, or Leave.
-     */
-    status: Status;
-
+export interface Action<E extends Event> {
     /**
      * The event that triggered this action.
      */

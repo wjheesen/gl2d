@@ -1,13 +1,12 @@
 import {Action} from './action'
-import {Status} from './status'
 import {Point} from '../struct/point'
 
-export interface MouseAction extends Action<MouseEvent>{
+export interface ScrollAction extends Action<WheelEvent | MouseEvent> {
 
     /**
-     * The status of this action: Start, Move, End, or Leave.
+     * True if scrolling uppwards; false if scrolling downwards.
      */
-    status: Status;
+    isUpward: boolean;
 
     /**
      * The position of the cursor in world space.

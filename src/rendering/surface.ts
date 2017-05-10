@@ -5,6 +5,7 @@ import {ScreenPoint} from '../action/screenpoint'
 import {Status} from '../action/status'
 import {MouseAction} from '../action/mouse'
 import {TouchAction} from '../action/touch'
+import {ScrollAction} from '../action/scroll'
 
 /**
  * A rendering surface linked to an HTMLCanvasElement (the drawing buffer).
@@ -96,8 +97,8 @@ export class Surface<R extends Renderer> {
      * @param screen the screen coordinate.
      * @param dst where to store the result.
      */
-    screenToNdc(screenPonit: ScreenPoint, dst: Point = new Point.Obj()) {
-        this.screenToCanvas(screenPonit, dst);
+    screenToNdc(screenPoint: ScreenPoint, dst: Point = new Point.Obj()) {
+        this.screenToCanvas(screenPoint, dst);
         this.canvasToNdc(dst, dst);
         return dst;
     }
@@ -274,9 +275,22 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a scroll action occurs on this surface.
      */
-    onScroll(callback: EventListener) {
-        this.drawingBuffer.addEventListener('DOMMouseScroll', callback, false); // for Firefox
-        this.drawingBuffer.addEventListener('mousewheel', callback, false); // for everyone else
+    onScrollAction(callback: (action: ScrollAction) => void) {
+        document.addEventListener(this.getScrollSupport(), (e: WheelEvent | MouseWheelEvent) => {
+            if(e.target === this.drawingBuffer){
+                let isUpward = e.deltaY < 0 || e.detail < 0 || e.wheelDelta > 0;
+                callback({ isUpward: isUpward, cursor: this.screenToWorld(e), src: e });
+            }
+        })
+    }
+
+    /**
+     * From https://developer.mozilla.org/en-US/docs/Web/Events/wheel
+     */
+    private getScrollSupport(){
+         return "onwheel" in document.createElement("div") ? "wheel" : // Modern browsers support "wheel"
+              document.onmousewheel !== undefined ? "mousewheel" : // Webkit and IE support at least "mousewheel"
+              "DOMMouseScroll"; // let's assume that remaining browsers are older Firefox
     }
 
 };

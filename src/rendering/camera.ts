@@ -93,7 +93,6 @@ export class Camera {
      * @returns the actual offset.
      */
     offset(desiredOffset: Vec2) {
-        // Compute the target position
         let targetPosition = Vec2.Obj.create(this.position);
         targetPosition.add(desiredOffset);
 
@@ -141,28 +140,22 @@ export class Camera {
      * @returns the actual scale factor.
      */
     zoomIn(desiredScaleFactor: number) {
-        // Compute the target zoom
         let targetZoom = this.zoom * desiredScaleFactor;
-        let actualScaleFactor = desiredScaleFactor;
-        // If target zoom falls below our min
+        let actualScaleFactor: number;
         if (targetZoom < this.minZoom) {
             // Adjust scale factor so that zoom * changeInZoom = minZoom
             actualScaleFactor = this.minZoom / this.zoom;
-            // Set zoom to min allowable
             this.zoom = this.minZoom;
-            // Otherwise, if traget zoom is above our max
         } else if (targetZoom > this.maxZoom) {
             // Adjust scale factor so that zoom * changeInZoom = maxZoom
             actualScaleFactor = this.maxZoom / this.zoom;
-            // Set zoom to max allowable
             this.zoom = this.maxZoom;
         } else {
-            // Otherwise we can safely set zoom to our target
+            // No need to adjust scale factor
+            actualScaleFactor = desiredScaleFactor;
             this.zoom = targetZoom;
         }
-        // Now we can safely apply scale factor to our projection region
-        this.view.stretch(1 / desiredScaleFactor);
-        // Return actual scale factor so caller can check if it differs from desired
+        this.view.stretch(1 / actualScaleFactor);
         return actualScaleFactor;
     }
 
