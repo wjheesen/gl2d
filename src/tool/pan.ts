@@ -1,10 +1,10 @@
 import { _MouseOrTouchAction } from '../action/mouseOrTouch';
-import { MouseOrTouchTool } from './mouseOrTouch';
+import { _MouseOrTouchTool } from './mouseOrTouch';
 import { Status } from '../action/status';
 import { Vec2 } from '../struct/vec2';
 import { Point } from '../struct/point';
 
-export class PanTool extends MouseOrTouchTool<_MouseOrTouchAction> {
+export class PanTool extends _MouseOrTouchTool {
 
     private previous: Point;
 

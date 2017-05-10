@@ -40,7 +40,7 @@ class ColorF extends Template<Float32Array>{
     /**
       * Randomly sets the (r,g,b) components of this Color.
       */
-    random() {
+    setRandom() {
         this.r = Math.random();
         this.g = Math.random();
         this.b = Math.random();
