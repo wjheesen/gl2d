@@ -16,7 +16,7 @@ export void vertex(){
     float height = u_thickness;
     float sx = width * a_basisCoord.x;
     float sy = height * a_basisCoord.y;
-    // Rotate the rectangle by the angle formed by p2, p1, and (x1+e, y1) for any e>0-->
+    // Rotate the rectangle by the angle formed by p2, p1, and (x1+e, y1) for any e>0
     float hypotenuse = width;
     float adjacent = p2.x - p1.x;
     float opposite = p2.y - p1.y;

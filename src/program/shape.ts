@@ -72,8 +72,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
      */
     setMesh(gl: WebGLRenderingContext, mesh: Mesh) {
         // Point to start of mesh's vertex array
-        gl.vertexAttribPointer(this.attribs.a_position, 2, gl.FLOAT,
-            false, 0, mesh.vertexBufferOffset);
+        gl.vertexAttribPointer(this.attribs.a_position, 2, gl.FLOAT, false, 0, mesh.vertexBufferOffset);
         // Get number of elements to render
         this.elementCount = mesh.indices.data.length;
         // Get byte offset of first element in element buffer
@@ -84,7 +83,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
      * Sets the matrix applied to shapes this program will draw.
      */
     setMatrix(gl: WebGLRenderingContext, matrix: Mat2d.Struct) {
-        gl.uniformMatrix3fv(this.uniforms.u_mesh, false, matrix.data);
+        gl.uniformMatrix3fv(this.uniforms.u_model, false, matrix.data);
     }
 
     /**

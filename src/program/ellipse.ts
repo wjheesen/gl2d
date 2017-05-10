@@ -11,7 +11,7 @@ import * as Shader from '../shader/ellipse';
  */
 export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> {
 
-    texCoordBuffer: WebGLBuffer;
+    basisCoords: WebGLBuffer;
     elementBuffer: WebGLBuffer;
 
     static create(gl: WebGLRenderingContext) {
@@ -19,7 +19,7 @@ export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> 
         program.location = Util.createProgramFromSources(gl, Shader.vertex, Shader.fragment);
         program.uniforms = Util.getUniformLocations(gl, program.location, Shader.UniformRenaming) as Shader.Uniforms;
         program.attribs = Util.getAttributeLocations(gl, program.location, Shader.AttributeRenaming) as Shader.Attributes;
-        program.texCoordBuffer = Util.createArrayBuffer(gl, new Float32Array([0, 1, 0, 0, 1, 0, 1, 1]));
+        program.basisCoords = Util.createArrayBuffer(gl, new Float32Array([0, 1, 0, 0, 1, 0, 1, 1]));
         program.elementBuffer = Util.createElementBuffer(gl, Mesh.polygonIndices(4).data);
         return program;
     }
@@ -30,9 +30,9 @@ export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> 
         // Enable blending (for transparency)
         gl.enable(gl.BLEND);
         // Bind tex buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
-        gl.vertexAttribPointer(this.attribs.a_texCoord, 2, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(this.attribs.a_texCoord);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.basisCoords);
+        gl.vertexAttribPointer(this.attribs.a_basisCoord, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this.attribs.a_basisCoord);
         // Bind element buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
     }
@@ -56,7 +56,7 @@ export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> 
      * @param bounds the boundaries of the ellipse.
      */
     setEllipse(gl: WebGLRenderingContext, ellipse: Rect.Struct) {
-        gl.uniform4fv(this.uniforms.u_rect, ellipse.data); 
+        gl.uniform4fv(this.uniforms.u_bounds, ellipse.data); 
     }
 
     /**
