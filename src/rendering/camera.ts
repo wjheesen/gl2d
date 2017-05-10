@@ -89,7 +89,7 @@ export class Camera {
     /**
      * Sends a request to offset this camera by the desired vector.
      * Note: the desired offset may be adjusted to keep the camera from viewing anything outside of the target area.
-     * @param desired the desired offset. 
+     * @param desiredOffset the desired offset. 
      * @returns the actual offset.
      */
     offset(desiredOffset: Vec2) {
@@ -136,7 +136,7 @@ export class Camera {
     /**
      * Sends a request to zoom in this camera by the desired scale factor.
      * Note: the desired scale factor is automatically adjusted to keep the camera from viewing anything outside of the target area. 
-     * @param desired the desired scale factor.
+     * @param desiredScaleFactor the desired scale factor.
      * @returns the actual scale factor.
      */
     zoomIn(desiredScaleFactor: number) {

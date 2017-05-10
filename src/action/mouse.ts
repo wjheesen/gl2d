@@ -1,8 +1,9 @@
+import { _Surface } from '../rendering/surface';
 import {Action} from './action'
 import {Status} from './status'
 import {Point} from '../struct/point'
 
-export interface MouseAction extends Action<MouseEvent>{
+export interface MouseAction<S extends _Surface> extends Action<S, MouseEvent>{
 
     /**
      * The status of this action: Start, Move, End, or Leave.
@@ -14,3 +15,5 @@ export interface MouseAction extends Action<MouseEvent>{
      */
     cursor: Point;
 }
+
+export type _MouseAction = MouseAction<_Surface>;

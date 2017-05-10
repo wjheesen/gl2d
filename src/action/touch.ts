@@ -1,8 +1,9 @@
+import { _Surface } from '../rendering/surface';
 import {Action} from './action'
 import {Status} from './status'
 import {Point} from '../struct/point'
 
-export interface TouchAction extends Action<TouchEvent>{
+export interface TouchAction<S extends _Surface> extends Action<S, TouchEvent>{
 
     /**
      * The status of this action: Start, Move, End, or Leave.
@@ -14,3 +15,5 @@ export interface TouchAction extends Action<TouchEvent>{
      */
     pointers: Point[];
 }
+
+export type _TouchAction = TouchAction<_Surface>;

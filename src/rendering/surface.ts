@@ -1,9 +1,10 @@
 import {Renderer} from './renderer'
 import {Point} from '../struct/point'
 import {Rect} from '../struct/rect'
+import {Vec2} from '../struct/vec2'
 import {ScreenPoint} from '../action/screenpoint'
 import {Status} from '../action/status'
-import {MouseAction} from '../action/mouse'
+import {MouseAction } from '../action/mouse';
 import {TouchAction} from '../action/touch'
 import {ScrollAction} from '../action/scroll'
 
@@ -82,6 +83,61 @@ export class Surface<R extends Renderer> {
     }
 
     /**
+     * Sends a request to offset the image displayed by this surface.
+     * @param desiredOffset the desired offset, which is automatically adjusted according to the renderer's camera settings.
+     * @returns the actual offset.
+     */
+    offset(desiredOffset: Vec2) {
+        let camera = this.renderer.camera;
+        let actual = camera.offset(desiredOffset);
+        if(!actual.equalsScalar(0)){
+            camera.updateMatrix();
+            this.requestRender();
+        }
+        return actual;
+    }
+
+    /**
+     * Sends a request to zoom into the image displayed by this surface.
+     * @param desiredScaleFactor the desired scale factor, which is automatically adjusted according to the renderer's camera settings.
+     * @returns the actual scale factor.
+     */
+    zoomIn(desiredScaleFactor: number){
+        let camera = this.renderer.camera;
+        let actual = camera.zoomIn(desiredScaleFactor);
+        if(actual !== 1){
+            camera.updateMatrix();
+            this.requestRender();
+        }
+        return actual;
+    }
+
+    /**
+     * Sends a request to zoom out of the image displayed by this surface.
+     * @param desiredScaleFactor the desired scale factor, which is automatically adjusted according to the renderer's camera settings.
+     * @returns the actual scale factor.
+     */
+    zoomOut(desiredScaleFactor: number){
+        return this.zoomIn(1/desiredScaleFactor);
+    }
+
+    /**
+     * Sends a request to zoom into the image displayed by this surface while fixing the specified focus point.
+     * @param desiredScaleFactor the desired scale factor, which is automatically adjusted according to the renderer's camera settings.
+     * @param focus the focus point. 
+     * @returns the actual scale factor and camera offset.
+     */
+    zoomToPoint(desiredScaleFactor: number, focus: Point) {
+        let camera = this.renderer.camera;
+        let actual = camera.zoomToPoint(desiredScaleFactor, focus);
+        if(actual.scaleFactor !== 1 || !actual.offset.equalsScalar(0)){
+            camera.updateMatrix();
+            this.requestRender();
+        }
+        return actual;
+    }
+
+    /**
      * Maps a screen cordinate  to canvas space.
      * @param screen the screen coordinate.
      * @param dst where to store the result.
@@ -145,7 +201,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a mouse action occurs on this surface.
      */
-    onMouseAction(callback: (action: MouseAction) => void){
+    onMouseAction(callback: (action: MouseAction<this>) => void){
         /**
          * Whether or not a mouse button is currently pressed.
          */
@@ -194,8 +250,9 @@ export class Surface<R extends Renderer> {
         }, false);
     }
 
-    private getMouseAction(event: MouseEvent, status: Status): MouseAction {
+    private getMouseAction(event: MouseEvent, status: Status): MouseAction<this> {
         return {
+            target: this,
             src: event,
             status: status,
             cursor: this.screenToWorld(event)
@@ -205,7 +262,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a touch action occurs on this surface.
      */
-    onTouchAction(callback: (action: TouchAction) => void){
+    onTouchAction(callback: (action: TouchAction<this>) => void){
         /**
          * Whether or not a pointer is currently touching the screen.
          */
@@ -251,8 +308,9 @@ export class Surface<R extends Renderer> {
         }, false);
     }
 
-    private getTouchAction(event: TouchEvent, status: Status): TouchAction {
+    private getTouchAction(event: TouchEvent, status: Status): TouchAction<this> {
         return {
+            target: this,
             src: event,
             status: status,
             pointers: this.getPointers(event)
@@ -275,11 +333,13 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a scroll action occurs on this surface.
      */
-    onScrollAction(callback: (action: ScrollAction) => void) {
+    onScrollAction(callback: (action: ScrollAction<this>) => void) {
         document.addEventListener(this.getScrollSupport(), (e: WheelEvent | MouseWheelEvent) => {
             if(e.target === this.drawingBuffer){
+                e.preventDefault();
+                e.stopPropagation();
                 let isUpward = e.deltaY < 0 || e.detail < 0 || e.wheelDelta > 0;
-                callback({ isUpward: isUpward, cursor: this.screenToWorld(e), src: e });
+                callback({ isUpward: isUpward, cursor: this.screenToWorld(e), target: this, src: e });
             }
         })
     }
@@ -294,3 +354,5 @@ export class Surface<R extends Renderer> {
     }
 
 };
+
+export type _Surface = Surface<Renderer>;
