@@ -71,4 +71,4 @@ function Capitalize([string] $str){
     }
 }
 
-export-modulemember -function Initialize-Repository, Update-Package, Update-Index, Update-Gulpfile, Update-Shaders, Update-All, Publish-Package
+# export-modulemember -function Initialize-Repository, Update-Package, Update-Index, Update-Gulpfile, Update-Shaders, Update-All, Publish-Package

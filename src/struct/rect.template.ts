@@ -1,6 +1,6 @@
 ﻿import {Template} from'gulp-structify/template'
-import {Point} from './point'
-import {Vec2} from './vec2'
+import {IPoint, Point} from './point'
+import {IVec2 } from './vec2'
 
 /**
  * A rectangle with (left, top, right, bottom) boundaries.
@@ -208,7 +208,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Sets this Rect to the smallest rectangle containing the two specified points.
      */
-    setUnionOfPoints(points: Point[], offset = 0, count = points.length) {
+    setUnionOfPoints(points: IPoint[], offset = 0, count = points.length) {
         //Enclose the first point 
         this.left = this.right = points[offset].x;
         this.top = this.bottom = points[offset].y;
@@ -241,7 +241,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect contains the specified point.
      */
-    containsPoint(p:Point) {
+    containsPoint(p: IPoint) {
         return this.containsPoint$(p.x, p.y);
     }
 
@@ -283,7 +283,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Expands this Rect to enclose the specified point.
      */
-    unionPoint(p: Point) {
+    unionPoint(p: IPoint) {
         this.unionPoint$(p.x, p.y);
     }
 
@@ -303,7 +303,7 @@ class Rect extends Template<Float32Array> {
      * @param offset offset of the first point in the subset.
      * @param count number of points in the subset.
      */
-    unionPoints(points: Point[], offset = 0, count = points.length) {
+    unionPoints(points: IPoint[], offset = 0, count = points.length) {
         //For each of the points in the subset
         while (count-- > 0) {
             //Expand this Rect to enclose the point
@@ -328,7 +328,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Insets the boundaries of this Rect by the specified vector.
      */
-    inset(vec: Vec2) {
+    inset(vec: IVec2) {
         this.inset$(vec.x, vec.y);
     }
 
@@ -345,7 +345,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Offsets the boundaries of this Rect by the specified vector.
      */
-    offset(vec: Vec2) {
+    offset(vec: IVec2) {
         this.offset$(vec.x, vec.y);
     }
 

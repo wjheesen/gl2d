@@ -1,6 +1,6 @@
 import {Template} from 'gulp-structify/template'
 import {IRect} from './rect'
-import {Point} from './point'
+import {IPoint} from './point'
 
  /**
   * Ellipse with semi axes (rx,ry) centered at the point (cx,cy).
@@ -37,7 +37,7 @@ export class Ellipse extends Template<Float32Array> {
      * Checks if this ellipse contains the specified point.
      * @param pt the point to check.
      */
-    contains(pt: Point) {
+    contains(pt: IPoint) {
         return this.contains$(pt.x, pt.y);
     }
 
