@@ -6,5 +6,6 @@
     "outDir": "../lib",
     "sourceMap": true
   },
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "exclude": ["./struct/*.template.ts"]
 }
