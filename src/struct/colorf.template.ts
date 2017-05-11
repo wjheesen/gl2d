@@ -1,5 +1,5 @@
 ﻿import {Template} from'gulp-structify/template'
-import {Color} from './color';
+import {IColor} from './color';
 import { ArgbRegex, pad } from './util';
 
 /**
@@ -49,7 +49,7 @@ class ColorF extends Template<Float32Array>{
     /**
      * Extracts the (r,g,b,a) components of the specified Color into this ColorF.
      */
-    setFromColor(src: Color){
+    setFromColor(src: IColor){
         this.r = src.r / 0xff;
         this.g = src.g / 0xff;
         this.b = src.b / 0xff;

@@ -129,63 +129,63 @@ class Rect extends Template<Float32Array> {
      * Gets the point at the center of this Rect
      */
     center() {
-        return Point.Obj.create$(this.centerX(), this.centerY());
+        return Point.create$(this.centerX(), this.centerY());
     }
 
     /**
      * Gets the point between the top left and top right corners of this Rect.
      */
     centerTop() {
-        return Point.Obj.create$(this.centerX(), this.top);
+        return Point.create$(this.centerX(), this.top);
     };
 
     /**
      *  Gets the point between the bottom left and bottom right corners of this Rect.
      */
     centerBottom() {
-        return Point.Obj.create$(this.centerX(), this.bottom);
+        return Point.create$(this.centerX(), this.bottom);
     };
 
     /**
      * Gets the point between the top and bottom left corners of this Rect.
      */
     centerLeft() {
-        return Point.Obj.create$(this.left, this.centerY());
+        return Point.create$(this.left, this.centerY());
     };
 
     /**
      * Gets the point between the top and bottom right corners of this Rect.
      */
     centerRight() {
-        return Point.Obj.create$(this.right, this.centerY());
+        return Point.create$(this.right, this.centerY());
     };
 
     /**
      * Gets the point at the bottom left corner of this Rect.
      */
     bottomLeft() {
-        return Point.Obj.create$(this.left, this.bottom);
+        return Point.create$(this.left, this.bottom);
     }
 
     /**
      * Gets the point at the bottom right corner of this Rect.
      */
     bottomRight() {
-        return Point.Obj.create$(this.right, this.bottom);
+        return Point.create$(this.right, this.bottom);
     }
 
     /**
      * Gets the point at the top left corner of this Rect.
      */
     topLeft() {
-        return Point.Obj.create$(this.left, this.top);
+        return Point.create$(this.left, this.top);
     }
 
     /**
      * Gets the point at the top right corner of this Rect.
      */
     topRight() {
-        return Point.Obj.create$(this.right, this.top);
+        return Point.create$(this.right, this.top);
     }
 
     /**

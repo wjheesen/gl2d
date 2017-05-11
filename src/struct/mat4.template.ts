@@ -1,5 +1,5 @@
 ﻿import {Template} from'gulp-structify/template'
-import {Rect} from './rect';
+import {IRect} from './rect';
 
 /**
  * A 4x4 matrix.
@@ -83,7 +83,7 @@ export class Mat4 extends Template<Float32Array>{
       * @param dst where to store the result. Defaults to new Mat4.
       * @returns the ortho matrix.
       */
-    ortho(clip: Rect, near: number, far: number) {
+    ortho(clip: IRect, near: number, far: number) {
         this.ortho$(clip.left, clip.right, clip.bottom, clip.top, near, far);
     }
 

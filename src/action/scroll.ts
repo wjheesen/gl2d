@@ -1,6 +1,6 @@
 import { _Surface } from '../rendering/surface';
 import {Action} from './action'
-import {Point} from '../struct/point'
+import {IPoint} from '../struct/point'
 
 export interface ScrollAction<S extends _Surface> extends Action<S, WheelEvent | MouseWheelEvent> {
 
@@ -12,7 +12,7 @@ export interface ScrollAction<S extends _Surface> extends Action<S, WheelEvent |
     /**
      * The position of the cursor in world space.
      */
-    cursor: Point;
+    cursor: IPoint;
 }
 
 export type _ScrollAction = ScrollAction<_Surface>;

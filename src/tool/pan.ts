@@ -2,11 +2,11 @@ import { _MouseOrTouchAction } from '../action/mouseOrTouch';
 import { _MouseOrTouchTool } from './mouseOrTouch';
 import { Status } from '../action/status';
 import { Vec2 } from '../struct/vec2';
-import { Point } from '../struct/point';
+import { IPoint } from '../struct/point';
 
 export class PanTool extends _MouseOrTouchTool {
 
-    private previous: Point;
+    private previous: IPoint;
 
     onAction(action: _MouseOrTouchAction): void {
         // Check previous point is set
@@ -32,7 +32,7 @@ export class PanTool extends _MouseOrTouchTool {
     onMove(action: _MouseOrTouchAction) {
         let current = this.getPrimaryPointer(action);
         // Translate by vector from current point to previous point (reverse direction)
-        let toPrevious = Vec2.Obj.fromPointToPoint(current, this.previous);
+        let toPrevious = Vec2.fromPointToPoint(current, this.previous);
         let actual = action.target.offset(toPrevious);
         // Keep track of previous point
         this.previous.x = current.x + actual.x;

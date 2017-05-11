@@ -1,8 +1,8 @@
 import {Program} from '../rendering/program';
 import {Mesh} from '../graphics/mesh'
-import {Rect} from '../struct/rect';
-import {ColorF} from '../struct/colorf';
-import {Mat4} from '../struct/mat4';
+import {RectStruct} from '../struct/rect';
+import {ColorFStruct} from '../struct/colorf';
+import {Mat4Struct} from '../struct/mat4';
 import * as Util from '../rendering/util';
 import * as Shader from '../shader/ellipse';
 
@@ -40,14 +40,14 @@ export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> 
     /**
      * Sets this program's projection matrix.
      */
-    setProjection(gl: WebGLRenderingContext, projection: Mat4.Struct) {
+    setProjection(gl: WebGLRenderingContext, projection: Mat4Struct) {
         gl.uniformMatrix4fv(this.uniforms.u_projection, false, projection.data);
     }
 
     /**
      * Sets this program's draw color.
      */
-    setColor(gl: WebGLRenderingContext, color: ColorF.Struct) {
+    setColor(gl: WebGLRenderingContext, color: ColorFStruct) {
         gl.uniform4fv(this.uniforms.u_color, color.data);
     }
 
@@ -55,7 +55,7 @@ export class EllipseProgram extends Program<Shader.Uniforms, Shader.Attributes> 
      * Sets the boundaries of the ellipse to draw.
      * @param bounds the boundaries of the ellipse.
      */
-    setEllipse(gl: WebGLRenderingContext, ellipse: Rect.Struct) {
+    setEllipse(gl: WebGLRenderingContext, ellipse: RectStruct) {
         gl.uniform4fv(this.uniforms.u_bounds, ellipse.data); 
     }
 

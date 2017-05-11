@@ -1,7 +1,7 @@
-import {Point} from '../struct/point';
-import {Vec2} from '../struct/vec2';
-import {Rect} from '../struct/rect';
-import {Mat4} from '../struct/mat4'
+import { IPoint } from '../struct/point';
+import { Vec2, IVec2 } from '../struct/vec2';
+import { Rect } from '../struct/rect';
+import { Mat4Struct } from '../struct/mat4'
 
 /**
  * Defines an orthographic projection from target space to clip space.
@@ -11,21 +11,21 @@ export class Camera {
     /**
      * The area this camera is targeting.
      */
-    target: Rect.Obj;
+    target: Rect;
     /**
      * The area of the target that is currently in view.
      */
-    view = new Rect.Obj();
+    view = new Rect();
 
     /**
      * The orthographic projection matrix that puts the target in view.
      */
-    matrix = new Mat4.Struct();
+    matrix = new Mat4Struct();
 
     /**
      * The current position of the camera in relation to the center of the target.
      */
-    position = new Vec2.Obj();
+    position = new Vec2();
 
     /**
      * The current zoom setting for this camera.
@@ -48,7 +48,7 @@ export class Camera {
      * @param minZoom the minimum zoom for the camera.
      * @param maxZoom the maximum zoom for the camera.
      */
-    constructor(target: Rect.Obj, minZoom: number, maxZoom: number){
+    constructor(target: Rect, minZoom: number, maxZoom: number){
         this.target = target;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
@@ -92,16 +92,16 @@ export class Camera {
      * @param desiredOffset the desired offset. 
      * @returns the actual offset.
      */
-    offset(desiredOffset: Vec2) {
-        let targetPosition = Vec2.Obj.create(this.position);
+    offset(desiredOffset: IVec2) {
+        let targetPosition = Vec2.create(this.position);
         targetPosition.add(desiredOffset);
 
         // Determine how far we can position the camera away from the origin
-        let far = Rect.Obj.create(this.target);                // Copy target boundaries
+        let far = Rect.create(this.target);                // Copy target boundaries
         far.mulScalar((this.zoom - this.minZoom) / this.zoom); // Determine max allowable size given zoom
         far.offset$(-far.centerX(), -far.centerY());           // Center at origin so we know how far left, up, right, and down we can go
 
-        let actualOffset = Vec2.Obj.create(desiredOffset);
+        let actualOffset = Vec2.create(desiredOffset);
         // If target position is too far left
         if (targetPosition.x < far.left) {
             // Adjust offset so that offset.x + position.x = far.left
@@ -176,19 +176,19 @@ export class Camera {
      * @param focus the focus point. 
      * @returns the actual scale factor and offset.
      */
-    zoomToPoint(desiredScaleFactor: number, focus: Point) {
+    zoomToPoint(desiredScaleFactor: number, focus: IPoint) {
         let view = this.view;
         // Convert (x,y) coordinates to [0,1] space
-        let normX = (focus.x - view.left) / Rect.width(view);
-        let normY = (focus.y - view.bottom) / Rect.height(view);
+        let normX = (focus.x - view.left) / view.width();
+        let normY = (focus.y - view.bottom) / view.height();
         // Apply scale factor
         let actualScaleFactor = this.zoomIn(desiredScaleFactor);
         // Determine position of focus point after change in zoom
-        let aft = new Vec2.Obj();
-        aft.x = view.left + (normX * Rect.width(view));
-        aft.y = view.bottom + (normY * Rect.height(view));
+        let aft = new Vec2();
+        aft.x = view.left + (normX * view.width());
+        aft.y = view.bottom + (normY * view.height());
         // Compute offset back to focus point
-        let offset = Vec2.Obj.fromPointToPoint(aft, focus);
+        let offset = Vec2.fromPointToPoint(aft, focus);
         // Apply the offset
         let actualOffset = this.offset(offset);
         // Return actual scale factor and offset so caller can check if they differ from desired

@@ -1,7 +1,7 @@
 import { _Surface } from '../rendering/surface';
 import {Action} from './action'
 import {Status} from './status'
-import {Point} from '../struct/point'
+import {IPoint} from '../struct/point'
 
 export interface MouseAction<S extends _Surface> extends Action<S, MouseEvent>{
 
@@ -13,7 +13,7 @@ export interface MouseAction<S extends _Surface> extends Action<S, MouseEvent>{
     /**
      * The position of the cursor in world space.
      */
-    cursor: Point;
+    cursor: IPoint;
 }
 
 export type _MouseAction = MouseAction<_Surface>;

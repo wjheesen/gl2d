@@ -1,7 +1,7 @@
 import { _Surface } from '../rendering/surface';
 import {Action} from './action'
 import {Status} from './status'
-import {Point} from '../struct/point'
+import {IPoint} from '../struct/point'
 
 export interface TouchAction<S extends _Surface> extends Action<S, TouchEvent>{
 
@@ -13,7 +13,7 @@ export interface TouchAction<S extends _Surface> extends Action<S, TouchEvent>{
     /**
      * The position in world space of each of the pointers that are currently down.
      */
-    pointers: Point[];
+    pointers: IPoint[];
 }
 
 export type _TouchAction = TouchAction<_Surface>;

@@ -1,6 +1,5 @@
 import {Renderer} from './renderer'
-import {Point} from '../struct/point'
-import {Rect} from '../struct/rect'
+import {IPoint, Point} from '../struct/point'
 import {Vec2} from '../struct/vec2'
 import {ScreenPoint} from '../action/screenpoint'
 import {Status} from '../action/status'
@@ -127,7 +126,7 @@ export class Surface<R extends Renderer> {
      * @param focus the focus point. 
      * @returns the actual scale factor and camera offset.
      */
-    zoomToPoint(desiredScaleFactor: number, focus: Point) {
+    zoomToPoint(desiredScaleFactor: number, focus: IPoint) {
         let camera = this.renderer.camera;
         let actual = camera.zoomToPoint(desiredScaleFactor, focus);
         if(actual.scaleFactor !== 1 || !actual.offset.equalsScalar(0)){
@@ -142,7 +141,7 @@ export class Surface<R extends Renderer> {
      * @param screen the screen coordinate.
      * @param dst where to store the result.
      */
-    screenToCanvas(screenPoint: ScreenPoint, dst: Point = new Point.Obj()) {
+    screenToCanvas(screenPoint: ScreenPoint, dst: IPoint = new Point()) {
         dst.x = screenPoint.clientX - this.clientRect.left;
         dst.y = screenPoint.clientY - this.clientRect.top;
         return dst;
@@ -153,7 +152,7 @@ export class Surface<R extends Renderer> {
      * @param screen the screen coordinate.
      * @param dst where to store the result.
      */
-    screenToNdc(screenPoint: ScreenPoint, dst: Point = new Point.Obj()) {
+    screenToNdc(screenPoint: ScreenPoint, dst: IPoint = new Point()) {
         this.screenToCanvas(screenPoint, dst);
         this.canvasToNdc(dst, dst);
         return dst;
@@ -164,7 +163,7 @@ export class Surface<R extends Renderer> {
      * @param screen the screen coordinate.
      * @param dst where to store the result.
      */
-    screenToWorld(screenPoint: ScreenPoint, dst: Point = new Point.Obj()) {
+    screenToWorld(screenPoint: ScreenPoint, dst: IPoint = new Point()) {
         this.screenToCanvas(screenPoint, dst);
         this.canvasToNdc(dst, dst);
         this.ndcToWorld(dst, dst);
@@ -176,7 +175,7 @@ export class Surface<R extends Renderer> {
      * @param p the canvas coordinate.
      * @param dst where to store the result.
      */
-    canvasToNdc(canvasPoint: Point, dst: Point = new Point.Obj()) {
+    canvasToNdc(canvasPoint: IPoint, dst: IPoint = new Point()) {
         // Normalize the coordinate by width and height of canvas
         let width = this.clientRect.width;
         let height = this.clientRect.height;
@@ -190,11 +189,11 @@ export class Surface<R extends Renderer> {
      * @param p the normalized device coordinate.
      * @param dst where to store the result.
      */
-    ndcToWorld(ndc: Point, dst: Point = new Point.Obj()) {
+    ndcToWorld(ndc: IPoint, dst: IPoint = new Point()) {
         // Depends on what is currently in view
         let view = this.renderer.camera.view;
-        dst.x = view.left + (ndc.x * Rect.width(view));
-        dst.y = view.bottom + (ndc.y * Rect.height(view));
+        dst.x = view.left + (ndc.x * view.width());
+        dst.y = view.bottom + (ndc.y * view.height());
         return dst;
     }
     
@@ -319,7 +318,7 @@ export class Surface<R extends Renderer> {
 
     private getPointers(event: TouchEvent) {
         // Create empty pointers array
-        let pointers: Point[] = [];
+        let pointers: IPoint[] = [];
         // Get the array of touches
         let touches = event.touches;
         // Convert each of the touches to world space and add to array

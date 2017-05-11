@@ -1,9 +1,9 @@
-﻿import {IndexTuple} from'../struct/indextuple'
-import {Vec2} from '../struct/vec2'
+﻿import {IndexTupleBuffer} from'../struct/indextuple'
+import { Vec2Struct } from '../struct/vec2'
 import {Mat2d} from '../struct/mat2d'
-import {Point} from '../struct/point'
+import {Point, IPoint} from '../struct/point'
 import {Rect} from '../struct/rect'
-import {Vertex} from '../struct/vertex'
+import { VertexBuffer } from '../struct/vertex'
 
 /**
  * Stores static polygon data that multiple shapes can share.
@@ -13,27 +13,27 @@ export class Mesh {
     /**
      * The polygon vertices.
      */
-    public vertices: Vertex.Buf;
+    public vertices: VertexBuffer;
 
     /**
      * The indices that divide the polygon into renderable triangles.
      */
-    public indices: IndexTuple.Buf;
+    public indices: IndexTupleBuffer;
 
     /**
      * The boundaries of the polygon.
      */
-    public bounds: Rect.Obj;
+    public bounds: Rect;
 
     /**
      * The point that remains fixed when stretch rotating the polygon.
      */
-    public pivot = new Point.Obj();
+    public pivot = new Point();
 
     /**
      * The point that determines the length and direction of the line for stretch rotating the polygon.
      */
-    public control = new Point.Obj();
+    public control = new Point();
 
     /**
      * The byte offset of this mesh's index data in an element buffer. Defaults to 0.
@@ -54,8 +54,8 @@ export class Mesh {
      * @param bounds the boundaries of the polygon.
      */
     constructor(
-        vertices: Vertex.Buf,
-        indices: IndexTuple.Buf,
+        vertices: VertexBuffer,
+        indices: IndexTupleBuffer,
         bounds = vertices.measureBoundaries(),
         pivot = bounds.centerTop(),
         control = bounds.centerBottom())
@@ -106,13 +106,13 @@ export class Mesh {
      * Creates the model for a square.
      */
     static square() {
-        return Mesh.rectangle(Rect.Obj.ltrb(0, 1, 1, 0));
+        return Mesh.rectangle(Rect.ltrb(0, 1, 1, 0));
     }
 
     /**
      * Creates the model for a rectangle
      */
-    static rectangle(rect: Rect.Obj) {
+    static rectangle(rect: Rect) {
         // Extract the verties from the rect
         let vertices = Mesh.rectVertices(rect);
         // Indices are same as polygon(4)
@@ -133,7 +133,7 @@ export class Mesh {
      * @param rect the rect from which to extract the vertices.
      */
     static rectVertices(rect: Rect) {
-        return new Vertex.Buf(
+        return new VertexBuffer(
             new Float32Array([
                 rect.left, rect.top,
                 rect.left, rect.bottom,
@@ -149,14 +149,14 @@ export class Mesh {
      */
     static polygonVertices(sides: number, radius = 1) {
         // Create a polygon big enough to hold the n vertices
-        let polygon = Vertex.Buf.create(sides);
+        let polygon = VertexBuffer.create(sides);
         // Translate the center point vertically by the
         // radius to get the first vertex.
-        let vertex = Vec2.Struct.create$(0, radius);
+        let vertex = Vec2Struct.create$(0, radius);
         // Add the first vertex to the polygon
         polygon.put(vertex);
         //Create a matrix to rotate the vertex about the center point
-        let rotation = Mat2d.Obj.rotate(2 * Math.PI / sides);
+        let rotation = Mat2d.rotate(2 * Math.PI / sides);
         //Perform the rotation and add the result to the array until it is full
         while (polygon.hasValidPosition()) {
             rotation.map(vertex, vertex);
@@ -173,7 +173,7 @@ export class Mesh {
      */
     static polygonIndices(n: number) {
         // Create an array big enough to hold all the index tuples
-        let indices = IndexTuple.Buf.create(n - 2);
+        let indices = IndexTupleBuffer.create(n - 2);
         // Compute indices and add to array until it is full
         let second = 1, third = 2;
         while (indices.hasValidPosition()) {
@@ -192,17 +192,17 @@ export class Mesh {
      */
     static starVertices(points: number, innerRadius: number, outerRadius: number) {
         // Create polygon big enough to hold the n inner vertices and n outer vertices
-        let polygon = Vertex.Buf.create(points + points);
+        let polygon = VertexBuffer.create(points + points);
         // Calculate the rotation angle
         let angle = 2 * Math.PI / points;
         // Create a rotation matrix
-        let rotation = new Mat2d.Obj();
+        let rotation = new Mat2d();
         // Translate the center point vertically by the
         // outer radius to get the first outer vertex.
-        let outerVertex = Vec2.Struct.create$(0, outerRadius);
+        let outerVertex = Vec2Struct.create$(0, outerRadius);
         // Translate the center point vertically by the inner radius
         // and rotate by half the angle to get the first inner vertex
-        let innerVertex = Vec2.Struct.create$(0, innerRadius);
+        let innerVertex = Vec2Struct.create$(0, innerRadius);
         rotation.setRotate(0.5 * angle);
         rotation.map(innerVertex, innerVertex);
         // Add the first outer and inner vertices to the polygon
@@ -232,7 +232,7 @@ export class Mesh {
         let innerIndexCount = n - 2;
         let outerIndexCount = n;
         // Create an array big enough to hold all the indices
-        let indices = IndexTuple.Buf.create(innerIndexCount + outerIndexCount);
+        let indices = IndexTupleBuffer.create(innerIndexCount + outerIndexCount);
         // Compute inner indices and add to array
         let first = 1, second = 3, third = 5;
         while (innerIndexCount--) {
@@ -254,7 +254,7 @@ export class Mesh {
      * Checks if this model contains the specified point.
      * @param pt the point to check.
      */
-    contains(pt: Point) {
+    contains(pt: IPoint) {
         return this.contains$(pt.x, pt.y);
     }
 

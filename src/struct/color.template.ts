@@ -1,5 +1,5 @@
 ﻿import {Template} from'gulp-structify/template';
-import {ColorF} from './colorF';
+import {IColorF} from './colorF';
 import { randomInt, ArgbRegex, pad } from "./util"
 
 /**
@@ -49,7 +49,7 @@ class Color extends Template<Uint8Array>{
     /**
     * Extracts the (r,g,b,a) components of the specified ColorF into this color.
     */
-    setFromColorF(src: ColorF) {
+    setFromColorF(src: IColorF) {
         this.r = src.r * 0xff;
         this.g = src.g * 0xff;
         this.b = src.b * 0xff;

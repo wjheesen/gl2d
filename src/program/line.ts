@@ -1,8 +1,8 @@
 import {Mesh} from '../graphics/mesh';
 import {Program} from '../rendering/program';
-import {Line} from '../struct/line';
-import {ColorF} from '../struct/colorf';
-import {Mat4} from '../struct/mat4';
+import {LineStruct} from '../struct/line';
+import {ColorFStruct} from '../struct/colorf';
+import {Mat4Struct} from '../struct/mat4';
 import * as Util from '../rendering/util';
 import * as Shader from '../shader/line';
 
@@ -40,14 +40,14 @@ export class LineProgram extends Program<Shader.Uniforms, Shader.Attributes> {
     /**
      * Sets this program's projection matrix.
      */
-    setProjection(gl: WebGLRenderingContext, projection: Mat4.Struct) {
+    setProjection(gl: WebGLRenderingContext, projection: Mat4Struct) {
         gl.uniformMatrix4fv(this.uniforms.u_projection, false, projection.data);
     }
 
     /**
      * Sets this program's draw color.
      */
-    setColor(gl: WebGLRenderingContext, color: ColorF.Struct) {
+    setColor(gl: WebGLRenderingContext, color: ColorFStruct) {
         gl.uniform4fv(this.uniforms.u_color, color.data);
     }
 
@@ -61,7 +61,7 @@ export class LineProgram extends Program<Shader.Uniforms, Shader.Attributes> {
     /**
      * Sets the position of the line segment this program will draw.
      */
-    setLine(gl: WebGLRenderingContext, line: Line.Struct) {
+    setLine(gl: WebGLRenderingContext, line: LineStruct) {
         gl.uniform4fv(this.uniforms.u_line, line.data);
     }
 

@@ -1,9 +1,9 @@
 import {Program} from '../rendering/program';
-import {Mat2d} from '../struct/mat2d'
-import {ColorF} from '../struct/colorf'
-import {Mat4} from '../struct/mat4'
-import {Vertex} from '../struct/vertex'
-import {IndexTuple} from '../struct/indextuple'
+import {Mat2dStruct} from '../struct/mat2d'
+import {ColorFStruct} from '../struct/colorf'
+import {Mat4Struct} from '../struct/mat4'
+import {VertexBuffer} from '../struct/vertex'
+import {IndexTupleBuffer} from '../struct/indextuple'
 import {Mesh} from '../graphics/mesh'
 import * as Shader from '../shader/shape';
 import * as Util from '../rendering/util';
@@ -56,14 +56,14 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
     /**
      * Sets this program's projection matrix.
      */
-    setProjection(gl: WebGLRenderingContext, projection: Mat4.Struct) {
+    setProjection(gl: WebGLRenderingContext, projection: Mat4Struct) {
         gl.uniformMatrix4fv(this.uniforms.u_projection, false, projection.data);
     }
 
     /**
      * Sets this program's draw color.
      */
-    setColor(gl: WebGLRenderingContext, color: ColorF.Struct) {
+    setColor(gl: WebGLRenderingContext, color: ColorFStruct) {
         gl.uniform4fv(this.uniforms.u_color, color.data);
     }
 
@@ -82,7 +82,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
    /**
      * Sets the matrix applied to shapes this program will draw.
      */
-    setMatrix(gl: WebGLRenderingContext, matrix: Mat2d.Struct) {
+    setMatrix(gl: WebGLRenderingContext, matrix: Mat2dStruct) {
         gl.uniformMatrix3fv(this.uniforms.u_model, false, matrix.data);
     }
 
@@ -107,7 +107,7 @@ function packMeshVertices(meshes: Mesh[]){
     }
 
     // Create an vertex buffer big enough to hold all the vertices
-    let packedVertices = Vertex.Buf.create(vertexCount);
+    let packedVertices = VertexBuffer.create(vertexCount);
 
     // Keep track of vertex offsets
     let bytesPerVertex = packedVertices.structLength() * packedVertices.data.BYTES_PER_ELEMENT;
@@ -136,7 +136,7 @@ function packMeshIndices(meshes: Mesh[]) {
     }
 
     // Create an index tuple buffer big enough to hold all the indices
-    let packedIndices = IndexTuple.Buf.create(indexTupleCount);
+    let packedIndices = IndexTupleBuffer.create(indexTupleCount);
 
     // Keep track of vertex offsets
     let bytesPerIndexTuple = packedIndices.structLength() * packedIndices.data.BYTES_PER_ELEMENT;

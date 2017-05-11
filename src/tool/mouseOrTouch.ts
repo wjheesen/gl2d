@@ -1,5 +1,5 @@
 import { _Surface } from '../rendering/surface';
-import { Point } from '../struct/point';
+import { IPoint } from '../struct/point';
 import { Tool } from './tool';
 import { MouseOrTouchAction, isMouseAction, isTouchAction } from '../action/mouseOrTouch';
 
@@ -11,7 +11,7 @@ export abstract class MouseOrTouchTool<S extends _Surface> implements Tool<Mouse
     /**
      * Gets either the cursor (in case of mouse action) or the first pointer down (in case of touch action).
      */
-    getPrimaryPointer(action: MouseOrTouchAction<S>): Point {
+    getPrimaryPointer(action: MouseOrTouchAction<S>): IPoint {
         if(isMouseAction(action)){
             return action.cursor;
         } else if(isTouchAction(action)){

@@ -1,5 +1,5 @@
 import {Template} from 'gulp-structify/template'
-import {Rect} from './rect'
+import {IRect} from './rect'
 import {Point} from './point'
 
  /**
@@ -26,11 +26,11 @@ export class Ellipse extends Template<Float32Array> {
     /**
      * Sets this ellipse to an ellipse bounded by the specified rect.
      */
-    setFromRect(bounds: Rect) {
-        this.rx = Rect.width(bounds) / 2;
-        this.ry = Rect.height(bounds) / 2;
-        this.cx = Rect.centerX(bounds);
-        this.cy = Rect.centerY(bounds);
+    setFromRect(bounds: IRect) {
+        this.rx = IRect.width(bounds) / 2;
+        this.ry = IRect.height(bounds) / 2;
+        this.cx = IRect.centerX(bounds);
+        this.cy = IRect.centerY(bounds);
     }
 
     /**
