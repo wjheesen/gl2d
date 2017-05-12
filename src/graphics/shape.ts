@@ -1,6 +1,6 @@
 ﻿import { Point, IPoint } from '../struct/point'
 import { Vec2, IVec2 } from '../struct/vec2'
-import { IRect } from '../struct/rect'
+import { IRect, Rect } from '../struct/rect'
 import { IMat2d, Mat2dStruct, ScaleToFit } from '../struct/mat2d';
 import { Mesh } from './mesh'
 
@@ -39,6 +39,15 @@ export class Shape {
             this.matrix.setIdentity()
             this.inverse.setIdentity()
         }
+    }
+
+    /**
+     * Measures the boundaries of this shape.
+     */
+    measureBoundaries() {
+        let bounds = new Rect();
+        this.inverse.mapRect(this.mesh.bounds, bounds);
+        return bounds;
     }
 
     /**

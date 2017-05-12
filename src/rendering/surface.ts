@@ -275,6 +275,7 @@ export class Surface<R extends Renderer> {
             // A pointer is currently touching the screen
             isTouching = true;
             // Tell the browser we're handling this event
+            e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
             callback(this.getTouchAction(e, Status.Start));
@@ -283,6 +284,7 @@ export class Surface<R extends Renderer> {
             // return if we're not dragging
             if (!isTouching) { return; }
             // tell the browser we're handling this event
+            e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
             callback(this.getTouchAction(e, Status.Move));
@@ -291,6 +293,7 @@ export class Surface<R extends Renderer> {
             // return if we're not dragging
             if (!isTouching) { return; }
             // tell the browser we're handling this event
+            e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
             callback(this.getTouchAction(e, Status.Leave));
@@ -299,6 +302,7 @@ export class Surface<R extends Renderer> {
             // return if we're not dragging
             if (!isTouching) { return; }
             // tell the browser we're handling this event
+            e.preventDefault();
             e.stopPropagation();
             // No pointer is currently touching the screen
             isTouching = false;
