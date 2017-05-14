@@ -1,3 +1,4 @@
+import { ColorFStruct } from '../struct/colorf';
 import { Point, IPoint } from '../struct/point'
 import { IVec2, Vec2 } from '../struct/vec2'
 import { IRect, Rect } from '../struct/rect'
@@ -7,12 +8,17 @@ import { Mesh } from "./mesh";
 /**
  * Graphic determined by matrix transformation of a mesh.
  */
-export abstract class Graphic {
+export class Shape {
 
     /**
      * Contains the vertex and index data for this shape.
      */
     public mesh: Mesh;
+
+    /**
+     * The color of this shape (if any).
+     */
+    public color?: ColorFStruct;
 
     /**
      * The matrix that maps this shape from model space to world space.
@@ -24,7 +30,9 @@ export abstract class Graphic {
      * @param mesh the static mesh data for this shape.
      * @param matrix matrix transformation of the shape. Defaults to identity.
      */
-    constructor(mesh: Mesh, matrix?: Mat2dStruct) {
+    constructor(mesh: Mesh, color?: ColorFStruct, matrix?: Mat2dStruct) {
+        this.mesh = mesh;
+        this.color = color;
         this.matrix = matrix || Mat2dStruct.identity();
     }
 

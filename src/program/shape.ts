@@ -4,7 +4,7 @@ import {ColorFStruct} from '../struct/colorf'
 import {Mat4Struct} from '../struct/mat4'
 import {VertexBuffer} from '../struct/vertex'
 import {IndexTupleBuffer} from '../struct/indextuple'
-import {Mesh} from '../graphic/mesh'
+import {Mesh} from '../graphics/mesh'
 import * as Shader from '../shader/shape';
 import * as Util from '../rendering/util';
 
@@ -96,7 +96,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
 
 /**
 * Packs mesh vertices into a single buffer.
-* @param meshs the meshes to pack.
+* @param meshes the meshes to pack.
 * @returns the packed vertices.
 */
 function packMeshVertices(meshes: Mesh[]){
@@ -124,7 +124,7 @@ function packMeshVertices(meshes: Mesh[]){
 
 /**
 * Packs mesh indices into a single buffer.
-* @param meshs the meshes to pack.
+* @param meshes the meshes to pack.
 * @returns the packed indices.
 */
 function packMeshIndices(meshes: Mesh[]) {
