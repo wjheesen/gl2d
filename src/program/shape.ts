@@ -4,7 +4,7 @@ import {ColorFStruct} from '../struct/colorf'
 import {Mat4Struct} from '../struct/mat4'
 import {VertexBuffer} from '../struct/vertex'
 import {IndexTupleBuffer} from '../struct/indextuple'
-import {Mesh} from '../graphics/mesh'
+import {Mesh} from '../graphic/mesh'
 import * as Shader from '../shader/shape';
 import * as Util from '../rendering/util';
 
@@ -48,7 +48,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
         gl.enable(gl.BLEND);
         // Bind position buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-        gl.enableVertexAttribArray(this.attribs.a_position);
+        gl.enableVertexAttribArray(this.attribs.position);
         // Bind element buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementBuffer);
     }
@@ -57,14 +57,14 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
      * Sets this program's projection matrix.
      */
     setProjection(gl: WebGLRenderingContext, projection: Mat4Struct) {
-        gl.uniformMatrix4fv(this.uniforms.u_projection, false, projection.data);
+        gl.uniformMatrix4fv(this.uniforms.projection, false, projection.data);
     }
 
     /**
      * Sets this program's draw color.
      */
     setColor(gl: WebGLRenderingContext, color: ColorFStruct) {
-        gl.uniform4fv(this.uniforms.u_color, color.data);
+        gl.uniform4fv(this.uniforms.color, color.data);
     }
 
     /**
@@ -72,7 +72,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
      */
     setMesh(gl: WebGLRenderingContext, mesh: Mesh) {
         // Point to start of mesh's vertex array
-        gl.vertexAttribPointer(this.attribs.a_position, 2, gl.FLOAT, false, 0, mesh.vertexBufferOffset);
+        gl.vertexAttribPointer(this.attribs.position, 2, gl.FLOAT, false, 0, mesh.vertexBufferOffset);
         // Get number of elements to render
         this.elementCount = mesh.indices.data.length;
         // Get byte offset of first element in element buffer
@@ -83,7 +83,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
      * Sets the matrix applied to shapes this program will draw.
      */
     setMatrix(gl: WebGLRenderingContext, matrix: Mat2dStruct) {
-        gl.uniformMatrix3fv(this.uniforms.u_model, false, matrix.data);
+        gl.uniformMatrix3fv(this.uniforms.model, false, matrix.data);
     }
 
     /**
