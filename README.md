@@ -5,3 +5,6 @@
 
 ## Install
 `npm install gl2d --save`
+
+## Usage
+See https://github.com/wjheesen/vector-art
