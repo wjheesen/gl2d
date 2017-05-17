@@ -262,18 +262,11 @@ export class Surface<R extends Renderer> {
      * Invokes the specified callback whenever a touch action occurs on this surface.
      */
     onTouchAction(callback: (action: TouchAction<this>) => void){
-        /**
-         * Whether or not a pointer is currently touching the screen.
-         */
-        let isTouching = false;
-        // TODO: send callback even if not touching, make note in action
 
         // Listen for touch events
         window.addEventListener("touchstart", (e: TouchEvent) => {
             // Return if not inside element
             if (e.target !== this.drawingBuffer) return;
-            // A pointer is currently touching the screen
-            isTouching = true;
             // Tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -281,8 +274,6 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Start));
         }, false);
         window.addEventListener("touchmove", (e: TouchEvent) => {
-            // return if we're not dragging
-            if (!isTouching) { return; }
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -290,8 +281,6 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Move));
         }, false);
         window.addEventListener("touchleave", (e: TouchEvent) => {
-            // return if we're not dragging
-            if (!isTouching) { return; }
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -299,13 +288,9 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Leave));
         }, false);
         window.addEventListener("touchend", (e: TouchEvent) => {
-            // return if we're not dragging
-            if (!isTouching) { return; }
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
-            // No pointer is currently touching the screen
-            isTouching = false;
             // Get action and pass to callback
             callback(this.getTouchAction(e, Status.End));
         }, false);
@@ -321,15 +306,12 @@ export class Surface<R extends Renderer> {
     }
 
     private getPointers(event: TouchEvent) {
-        // Create empty pointers array
         let pointers: IPoint[] = [];
-        // Get the array of touches
         let touches = event.touches;
         // Convert each of the touches to world space and add to array
         for (let i = 0; i < touches.length; i++) {
             pointers[i] = this.screenToWorld(touches[i]);
         }
-        // Return the array of pointers
         return pointers;
     }
 

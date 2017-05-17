@@ -81,7 +81,7 @@ export class Shape {
 
     /**
      * Converts the vertex at the specified position from model space to world space.
-     * @param position the position of the vertex in vertex buffer associated with this shape's mesh.
+     * @param position the position of the vertex in the vertex buffer associated with this shape's mesh.
      * @returns the position of the vertex in world space, or null if no vertex exists at the specified position.
      */
     convertVertexToWorldSpace(position: number){

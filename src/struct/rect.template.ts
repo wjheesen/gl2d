@@ -274,10 +274,10 @@ class Rect extends Template<Float32Array> {
      * Expands this Rect to enclose the other Rect.
      */
     union(other: Rect) {
-        this.left = Math.max(this.left, other.left);
-        this.right = Math.min(this.right, other.right);
-        this.bottom = Math.max(this.bottom, other.bottom);
-        this.top = Math.min(this.top, other.top);
+        this.left = Math.min(this.left, other.left);
+        this.right = Math.max(this.right, other.right);
+        this.bottom = Math.min(this.bottom, other.bottom);
+        this.top = Math.max(this.top, other.top);
     }
 
     /**
