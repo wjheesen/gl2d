@@ -80,6 +80,21 @@ export class Shape {
     }
 
     /**
+     * Converts the vertex at the specified position from model space to world space.
+     * @param position the position of the vertex in vertex buffer associated with this shape's mesh.
+     * @returns the position of the vertex in world space, or null if no vertex exists at the specified position.
+     */
+    convertVertexToWorldSpace(position: number){
+        let vertices = this.mesh.vertices;
+        if(vertices.moveToPosition(position)){
+            let dst = new Point();
+            this.matrix.map(vertices, dst);
+            return dst;
+        }
+        return null;
+    }
+
+    /**
      * Checks if this shape contains the point (x,y).
      * @param point the point to check.
      * @param inverse the inverse of this shape's model matrix. If undefined, the inverse matrix will be calculated on the fly.
