@@ -352,7 +352,7 @@ class Mat2d extends Template<Float32Array>{
         let { c1r1, c2r1, c3r1, c1r2, c2r2, c3r2 } = other;
 
         // Compute the inverse determinant of the other Mat2d
-        let invDet = 1 / (c1r1 * c2r2) - (c2r1 * c1r2)
+        let invDet = 1 / (c1r1 * c2r2 - c2r1 * c1r2)
 
         // Compute the inverse entries
         this.c1r1 = c2r2 * invDet;
