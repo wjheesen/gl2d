@@ -67,13 +67,7 @@ export class Shape {
      * @param dst where to write the result. Defaults to new point.
      * @returns dst.
      */
-    convertPointToModelSpace(pointInWorld: IPoint, inverseModelMatrix?: IMat2d){
-        // Compute inverse if not passed in
-        if(!inverseModelMatrix){
-            inverseModelMatrix = Mat2d.create(this.matrix);
-            IMat2d.invert(inverseModelMatrix);
-        }
-        // Map point to model space
+    convertPointToModelSpace(pointInWorld: IPoint, inverseModelMatrix: IMat2d = Mat2d.inverse(this.matrix)){
         let dst = new Point();
         IMat2d.map(inverseModelMatrix, pointInWorld, dst);
         return dst;

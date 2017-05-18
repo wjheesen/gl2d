@@ -7,19 +7,19 @@ export const enum Status {
      */
     Start,
     /**
-     * The action is ongoing, and movement is occurring.
+     * Movement is occurring, but without dragging.
+     */
+    Move,
+    /**
+     * Both movement and dragging are occurring.
      */
     Drag,
     /**
-     * The action has not begun, but movement is occuring.
+     * The action has left the boundaries of the canvas.
      */
-    Move,
+    Leave,
     /**
      * The action is over.
      */
     End,
-    /**
-     * The action has left the boundaries of the canvas.
-     */
-    Leave
 }
