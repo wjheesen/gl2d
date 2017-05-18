@@ -151,5 +151,5 @@ export abstract class Drawable<R extends Renderer> {
     /**
      * Draws this drawable using the specified renderer.
      */
-    abstract draw: (renderer: R) => void;
+    abstract draw(renderer: R): void;
 }
