@@ -18,8 +18,8 @@ export class PanTool extends _MouseOrTouchTool {
         switch(action.status){
             case Status.Start:
                 return this.onStart(action);
-            case Status.Move:
-                return this.onMove(action);
+            case Status.Drag:
+                return this.onDrag(action);
             case Status.End:
                 this.previous = null;
         }
@@ -29,7 +29,7 @@ export class PanTool extends _MouseOrTouchTool {
         this.previous = this.getPrimaryPointer(action);
     }
 
-    onMove(action: _MouseOrTouchAction) {
+    onDrag(action: _MouseOrTouchAction) {
         let current = this.getPrimaryPointer(action);
         // Translate by vector from current point to previous point (reverse direction)
         let toPrevious = Vec2.fromPointToPoint(current, this.previous);

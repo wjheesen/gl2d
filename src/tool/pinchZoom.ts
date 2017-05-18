@@ -22,8 +22,8 @@ export class PinchZoomTool implements _TouchTool {
         switch(action.status){
             case Status.Start:
                 return this.onStart(action);
-            case Status.Move:
-                return this.onMove(action);
+            case Status.Drag:
+                return this.onDrag(action);
             case Status.End:
                 this.previousFocus = null;
         }
@@ -36,7 +36,7 @@ export class PinchZoomTool implements _TouchTool {
         this.previousFocus = Point.midpoint(p1, p2);
     }
 
-    onMove(action: _TouchAction) {
+    onDrag(action: _TouchAction) {
         let p1 = action.pointers[0];
         let p2 = action.pointers[1];
         let span = IPoint.distance(p1, p2);

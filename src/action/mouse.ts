@@ -14,11 +14,6 @@ export interface MouseAction<S extends _Surface> extends Action<S, MouseEvent>{
      * The position of the cursor in world space.
      */
     cursor: IPoint;
-
-    /**
-     * True if the mouse is currently pressed.
-     */
-    isPressed: boolean;
 }
 
 export type _MouseAction = MouseAction<_Surface>;

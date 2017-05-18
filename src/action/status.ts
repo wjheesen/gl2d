@@ -9,6 +9,10 @@ export const enum Status {
     /**
      * The action is ongoing, and movement is occurring.
      */
+    Drag,
+    /**
+     * The action has not begun, but movement is occuring.
+     */
     Move,
     /**
      * The action is over.

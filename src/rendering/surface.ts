@@ -216,45 +216,48 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Start, isPressed));
+            callback(this.getMouseAction(e, Status.Start));
         }, false);
         window.addEventListener("mousemove", e => {
-            // If mouse is pressed, tell browser we're handling this event
+            // If mouse is pressed
             if (isPressed) {
+                // Tell browser we're handling this event
                 e.preventDefault();
                 e.stopPropagation();
+                // Process as a drag action
+                callback(this.getMouseAction(e, Status.Drag));
+            } else {
+                // Otherwise process as a move action
+                callback(this.getMouseAction(e, Status.Move));
             }
-            // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Move, isPressed));
         }, false);
         window.addEventListener("mouseout", e => {
-            // If mouse is pressed, tell browser we're handling this event
-            if (isPressed) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            // Ignore if mouse not pressed
+            if (!isPressed) { return; } 
+            // Tell browser we're handling this event
+            e.preventDefault();
+            e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Leave, isPressed));
+            callback(this.getMouseAction(e, Status.Leave));
         }, false);
         window.addEventListener("mouseup", e => {
-            // If mouse was pressed, tell browser we're handling this event
-            if (isPressed) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            // Ignore if mouse not pressed
+            if (!isPressed) { return; } 
             // Mouse is no longer pressed
             isPressed = false;
+            // Tell browser we're handling this event
+            e.preventDefault();
+            e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.End, isPressed));
+            callback(this.getMouseAction(e, Status.End));
         }, false);
     }
 
-    private getMouseAction(event: MouseEvent, status: Status, isPressed: boolean): MouseAction<this> {
+    private getMouseAction(event: MouseEvent, status: Status): MouseAction<this> {
         return {
             target: this,
             src: event,
             status: status,
-            isPressed: isPressed,
             cursor: this.screenToWorld(event)
         }
     }
@@ -288,7 +291,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getTouchAction(e, Status.Move));
+            callback(this.getTouchAction(e, Status.Drag));
         }, false);
         window.addEventListener("touchleave", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
