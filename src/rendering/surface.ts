@@ -287,7 +287,7 @@ export class Surface<R extends Renderer> {
         window.addEventListener("touchmove", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
             if (!isActive) return;
-            // tell the browser we're handling this event
+            // Tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
@@ -296,7 +296,7 @@ export class Surface<R extends Renderer> {
         window.addEventListener("touchleave", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
             if (!isActive) return;
-            // tell the browser we're handling this event
+            // Tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
@@ -305,7 +305,9 @@ export class Surface<R extends Renderer> {
         window.addEventListener("touchend", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
             if (!isActive) return;
-            // tell the browser we're handling this event
+            // Touch event is no longer active
+            isActive = false;
+            // Tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
