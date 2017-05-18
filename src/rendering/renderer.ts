@@ -56,7 +56,6 @@ export abstract class Renderer {
     /**
      * Binds the specified program to the WebGL rendering context, if not already bound.
      * @param program the program to bind.
-     * @returns the bound program.
      */
     useProgram<P extends _Program>(program: P) {
         // If the program is not already being used
@@ -66,6 +65,5 @@ export abstract class Renderer {
             // Mark it as the current program
             this.currentProgram = program;
         }
-        return program;
     }
 };
