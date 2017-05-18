@@ -216,44 +216,45 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Start));
+            callback(this.getMouseAction(e, Status.Start, isPressed));
         }, false);
         window.addEventListener("mousemove", e => {
-            // return if no mouse button pressed
-            if (!isPressed) { return; }
-            // tell the browser we're handling this event
-            e.preventDefault();
-            e.stopPropagation();
+            // If mouse is pressed, tell browser we're handling this event
+            if (isPressed) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Move));
+            callback(this.getMouseAction(e, Status.Move, isPressed));
         }, false);
         window.addEventListener("mouseout", e => {
-            // return if no mouse button pressed
-            if (!isPressed) { return; }
-            // tell the browser we're handling this event
-            e.preventDefault();
-            e.stopPropagation();
+            // If mouse is pressed, tell browser we're handling this event
+            if (isPressed) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Leave));
+            callback(this.getMouseAction(e, Status.Leave, isPressed));
         }, false);
         window.addEventListener("mouseup", e => {
-            // return if no mouse button pressed
-            if (!isPressed) { return; }
-            // tell the browser we're handling this event
-            e.preventDefault();
-            e.stopPropagation();
-            // The mouse button is no longer pressed
+            // If mouse was pressed, tell browser we're handling this event
+            if (isPressed) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            // Mouse is no longer pressed
             isPressed = false;
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.End));
+            callback(this.getMouseAction(e, Status.End, isPressed));
         }, false);
     }
 
-    private getMouseAction(event: MouseEvent, status: Status): MouseAction<this> {
+    private getMouseAction(event: MouseEvent, status: Status, isPressed: boolean): MouseAction<this> {
         return {
             target: this,
             src: event,
             status: status,
+            isPressed: isPressed,
             cursor: this.screenToWorld(event)
         }
     }
@@ -263,10 +264,17 @@ export class Surface<R extends Renderer> {
      */
     onTouchAction(callback: (action: TouchAction<this>) => void){
 
+        /**
+         * Whether or no a touch event is currently active.
+         */
+        let isActive = false;
+
         // Listen for touch events
         window.addEventListener("touchstart", (e: TouchEvent) => {
             // Return if not inside element
             if (e.target !== this.drawingBuffer) return;
+            // Mark touch event active
+            isActive = true;
             // Tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -274,6 +282,8 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Start));
         }, false);
         window.addEventListener("touchmove", (e: TouchEvent) => {
+            // Don't send callback if touch action did not originate inside the element
+            if (!isActive) return;
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -281,6 +291,8 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Move));
         }, false);
         window.addEventListener("touchleave", (e: TouchEvent) => {
+            // Don't send callback if touch action did not originate inside the element
+            if (!isActive) return;
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
@@ -288,6 +300,8 @@ export class Surface<R extends Renderer> {
             callback(this.getTouchAction(e, Status.Leave));
         }, false);
         window.addEventListener("touchend", (e: TouchEvent) => {
+            // Don't send callback if touch action did not originate inside the element
+            if (!isActive) return;
             // tell the browser we're handling this event
             e.preventDefault();
             e.stopPropagation();
