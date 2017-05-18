@@ -348,11 +348,11 @@ class Mat2d extends Template<Float32Array>{
      * Sets this Mat2d to the inverse of the other Mat2d.
      */
     setInverse(other: Mat2d){
-        // Compute the inverse determinant of the other Mat2d
-        let invDet = 1 / this.determinant();
-
-        // Get each of the entries in the other Mat2d
+        // Copy each of the entries of the other Mat2d
         let { c1r1, c2r1, c3r1, c1r2, c2r2, c3r2 } = other;
+
+        // Compute the inverse determinant of the other Mat2d
+        let invDet = 1 / (c1r1 * c2r2) - (c2r1 * c1r2)
 
         // Compute the inverse entries
         this.c1r1 = c2r2 * invDet;
@@ -361,13 +361,6 @@ class Mat2d extends Template<Float32Array>{
         this.c1r2 = -c1r2 * invDet;
         this.c2r2 = c1r1 * invDet;
         this.c3r2 = ((c1r2 * c3r1) - (c1r1 * c3r2)) * invDet;
-    }
-
-    /**
-     * Sets this Mat2d to its inverse.
-     */
-    invert() {
-        this.setInverse(this);
     }
 
     /**

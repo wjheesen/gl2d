@@ -68,11 +68,7 @@ export abstract class Drawable<R extends Renderer> {
      * @param dst where to write the result. Defaults to new point.
      * @returns dst.
      */
-    convertPointToModelSpace(pointInWorld: IPoint, inverseModelMatrix?: IMat2d){
-        // Computer inverse if not passed in
-        if(!inverseModelMatrix){
-             inverseModelMatrix = Mat2d.inverse(this.matrix); 
-        }
+    convertPointToModelSpace(pointInWorld: IPoint, inverseModelMatrix: IMat2d = Mat2d.inverse(this.matrix)){
         let dst = new Point();
         IMat2d.map(inverseModelMatrix, pointInWorld, dst);
         return dst;
