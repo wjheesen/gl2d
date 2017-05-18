@@ -1,3 +1,4 @@
+import { Renderer } from '../rendering/renderer';
 import { ColorFStruct } from '../struct/colorf';
 import { Point, IPoint } from '../struct/point'
 import { IVec2, Vec2 } from '../struct/vec2'
@@ -6,24 +7,24 @@ import { IMat2d, Mat2dStruct, ScaleToFit, Mat2d } from '../struct/mat2d';
 import { Mesh } from "./mesh";
 
 /**
- * Graphic determined by matrix transformation of a mesh.
+ * 2D shape determined by matrix transformation of a mesh.
  */
-export class Shape {
+export abstract class Shape<R extends Renderer> {
 
     /**
      * Contains the vertex and index data for this shape.
      */
-    public mesh: Mesh;
+    mesh: Mesh;
 
     /**
      * The color of this shape (if any).
      */
-    public color?: ColorFStruct;
+    color?: ColorFStruct;
 
     /**
      * The matrix that maps this shape from model space to world space.
      */
-    public matrix: Mat2dStruct;
+    matrix: Mat2dStruct;
 
     /**
      * Creates a shape with the specified matrix transformation.
@@ -146,4 +147,9 @@ export class Shape {
         this.matrix.setStretchRotateToPoint(start, end, pivot);
         this.matrix.preTranslate(vec); //*
     }
+
+    /**
+     * Draws this shape using the specified renderer.
+     */
+    abstract draw: (renderer: R) => void;
 }

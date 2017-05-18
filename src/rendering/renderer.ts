@@ -54,10 +54,11 @@ export abstract class Renderer {
     abstract onDrawFrame(): void;
 
     /**
-     * Binds to the specified program, if not already bound.
+     * Binds the specified program to the WebGL rendering context, if not already bound.
      * @param program the program to bind.
+     * @returns the bound program.
      */
-    useProgram(program: _Program) {
+    useProgram<P extends _Program>(program: P) {
         // If the program is not already being used
         if (this.currentProgram !== program) {
             // Start using it
@@ -65,5 +66,6 @@ export abstract class Renderer {
             // Mark it as the current program
             this.currentProgram = program;
         }
+        return program;
     }
 };

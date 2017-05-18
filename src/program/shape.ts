@@ -4,7 +4,7 @@ import {ColorFStruct} from '../struct/colorf'
 import {Mat4Struct} from '../struct/mat4'
 import {VertexBuffer} from '../struct/vertex'
 import {IndexTupleBuffer} from '../struct/indextuple'
-import {Mesh} from '../graphics/mesh'
+import {Mesh} from '../drawable/mesh'
 import * as Shader from '../shader/shape';
 import * as Util from '../rendering/util';
 
