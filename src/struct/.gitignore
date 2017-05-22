@@ -1,2 +1,4 @@
 *.ts
 !*.template.ts
+!util.ts
+!vertex.ts
