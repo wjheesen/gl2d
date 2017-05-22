@@ -233,7 +233,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect contains the other Rect.
      */
-    contains(other: Rect) {
+    containsRect(other: Rect) {
         return this.left <= other.left && other.right <= this.right &&
             this.bottom <= other.bottom && other.top <= this.top;
     }
@@ -241,14 +241,14 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect contains the specified point.
      */
-    containsPoint(p: IPoint) {
-        return this.containsPoint$(p.x, p.y);
+    contains(p: IPoint) {
+        return this.contains$(p.x, p.y);
     }
 
     /**
      * Checks if this Rect contains the point (x,y).
      */
-    containsPoint$(x: number, y: number) {
+    contains$(x: number, y: number) {
         return this.left <= x && x <= this.right && this.bottom <= y && y <= this.top;
     }
 
