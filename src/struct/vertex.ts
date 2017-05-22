@@ -17,11 +17,11 @@ export class VertexBuffer extends Vec2Buffer {
 
     /**
      * Gets the coordinates of the vertex at the specified position.
-     * @param position the position of the vertex in this buffer.
+     * @param position the position of the vertex in this buffer. Defaults to the current position of this buffer.
      * @param dst where to write the coordinates. Defaults to new Vec2.
      * @returns dst, or null if no vertex exists at the specified position.
      */
-    get(position: number, dst?: IVec2){
+    get(position = this.position(), dst?: IVec2){
         if(this.moveToPosition(position)){
             if(!dst){ dst = new Vec2(); }
             IVec2.set(dst, this);
