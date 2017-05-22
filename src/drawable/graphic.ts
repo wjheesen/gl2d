@@ -1,7 +1,7 @@
 import { Point, IPoint } from '../struct/point'
 import { IVec2 } from '../struct/vec2'
 import { IMat2d, Mat2dStruct, Mat2d } from '../struct/mat2d';
-import { Rect } from "src";
+import { Rect } from "../struct/rect";
 
 /**
  * A graphic that can be transformed by altering its model matrix.
