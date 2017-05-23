@@ -1,6 +1,6 @@
 import { IPoint } from '../struct/point';
-import { Vec2, IVec2 } from '../struct/vec2';
-import { Rect } from '../struct/rect';
+import { IVec2, Vec2, Vec2Struct } from '../struct/vec2';
+import { Rect, RectStruct } from '../struct/rect';
 import { Mat4Struct } from '../struct/mat4'
 
 /**
@@ -11,11 +11,11 @@ export class Camera {
     /**
      * The area this camera is targeting.
      */
-    target: Rect;
+    target: RectStruct;
     /**
      * The area of the target that is currently in view.
      */
-    view = new Rect();
+    view = new RectStruct();
 
     /**
      * The orthographic projection matrix that puts the target in view.
@@ -25,7 +25,7 @@ export class Camera {
     /**
      * The current position of the camera in relation to the center of the target.
      */
-    position = new Vec2();
+    position = new Vec2Struct();
 
     /**
      * The current zoom setting for this camera.
@@ -48,7 +48,7 @@ export class Camera {
      * @param minZoom the minimum zoom for the camera.
      * @param maxZoom the maximum zoom for the camera.
      */
-    constructor(target: Rect, minZoom: number, maxZoom: number){
+    constructor(target: RectStruct, minZoom: number, maxZoom: number){
         this.target = target;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
