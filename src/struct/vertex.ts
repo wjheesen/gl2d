@@ -16,18 +16,27 @@ export class VertexBuffer extends Vec2Buffer {
     }
 
     /**
-     * Gets the coordinates of the vertex at the specified position.
-     * @param position the position of the vertex in this buffer. Defaults to the current position of this buffer.
+     * Gets the coordinates of the vertex at the specified position without changing the position of this buffer.
+     * @param position the position of the vertex in this buffer.
      * @param dst where to write the coordinates. Defaults to new Vec2.
-     * @returns dst, or null if no vertex exists at the specified position.
+     * @returns dst.
      */
-    get(position = this.position(), dst?: IVec2){
-        if(this.moveToPosition(position)){
-            if(!dst){ dst = new Vec2(); }
-            IVec2.set(dst, this);
-            return dst;
-        }
-        return null;
+    get(position: number, dst: IVec2 = new Vec2()){
+        let dataPosition = position * this.structLength();
+        dst.x = this.data[dataPosition];
+        dst.y = this.data[dataPosition+1];
+        return dst;
+    }
+
+    /**
+     * Gets the coordinates of the next vertex in this buffer, increasing its position by one.
+     * @param dst where to write the coordinates. Defaults to new Vec2.
+     * @returns dst.
+     */
+    next(dst: IVec2 = new Vec2()){
+        dst.x = this.data[this.dataPosition++];
+        dst.y = this.data[this.dataPosition++];
+        return dst;
     }
 
     /**
