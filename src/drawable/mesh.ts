@@ -47,6 +47,35 @@ export class Mesh {
     }
 
     /**
+     * Creates a mesh with the specified source data.
+     * @param source obejct containing the data for the mesh.
+     */
+    static fromSource(source: MeshSource){
+        let vertices: VertexBuffer;
+        let indices: IndexTupleBuffer;
+
+        if(source.vertices instanceof VertexBuffer){
+            vertices = source.vertices;
+        } else if(source.vertices instanceof Float32Array){
+            vertices = new VertexBuffer(source.vertices);
+        } else {
+            vertices = new VertexBuffer(new Float32Array(source.vertices));
+        }
+        
+        if(source.indices){
+            if(source.indices instanceof IndexTupleBuffer){
+                indices = source.indices;
+            } else if(source.indices instanceof Uint16Array){
+                indices = new IndexTupleBuffer(source.indices);
+            } else {
+                indices = new IndexTupleBuffer(new Uint16Array(source.indices));
+            }
+        }
+
+        return new Mesh(vertices, indices)
+    }
+
+    /**
      * Creates the mesh for a regular mesh with n sides.
      * @param n how many sides the mesh should have.
      */
@@ -227,4 +256,9 @@ export class Mesh {
         // Return the indices
         return indices;
     }
+}
+
+export class MeshSource {
+    vertices: number[] | Float32Array | VertexBuffer; 
+    indices?: number[] | Uint16Array | IndexTupleBuffer;
 }
