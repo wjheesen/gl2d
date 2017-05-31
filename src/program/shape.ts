@@ -1,5 +1,5 @@
 import {Program} from '../rendering/program';
-import {Mat2dStruct} from '../struct/mat2d'
+import {Mat3Struct} from '../struct/mat3'
 import {ColorFStruct} from '../struct/colorf'
 import {Mat4Struct} from '../struct/mat4'
 import {VertexBuffer} from '../struct/vertex'
@@ -82,7 +82,7 @@ export class ShapeProgram extends Program<Shader.Uniforms, Shader.Attributes> {
    /**
      * Sets the matrix applied to shapes this program will draw.
      */
-    setMatrix(gl: WebGLRenderingContext, matrix: Mat2dStruct) {
+    setMatrix(gl: WebGLRenderingContext, matrix: Mat3Struct) {
         gl.uniformMatrix3fv(this.uniforms.model, false, matrix.data);
     }
 
