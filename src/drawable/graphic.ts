@@ -1,7 +1,8 @@
 import { Point, IPoint } from '../struct/point'
 import { IVec2 } from '../struct/vec2'
-import { IMat2d, Mat2dStruct, Mat2d } from '../struct/mat2d';
 import { Rect } from "../struct/rect";
+import { Mat2d, IMat2d } from "../struct/mat2d";
+import { Mat3Struct } from "../struct/mat3";
 
 /**
  * A graphic that can be transformed by altering its model matrix.
@@ -11,14 +12,14 @@ export abstract class Graphic {
     /**
      * The matrix that maps this graphic from model space to world space.
      */
-    matrix: Mat2dStruct;
+    matrix: Mat3Struct;
 
     /**
-     * Creates a new transformable with specified matrix transformation.
+     * Creates a new graphic with the specified matrix transformation.
      * @param matrix the initial matrix transformation. Defaults to identity.
      */
-    constructor(matrix?: Mat2dStruct) {
-        this.matrix = matrix || Mat2dStruct.identity();
+    constructor(matrix?: Mat3Struct) {
+        this.matrix = matrix || Mat3Struct.identity();
     }
 
     /**

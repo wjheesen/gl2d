@@ -26,7 +26,7 @@ export const enum ScaleToFit {
 };
 
 /**
- * A 3x3 matrix for 2d transformations. The bottom row is always ignored.
+ * A 3x2 matrix for 2d transformations.
  */
 class Mat2d extends Template<Float32Array>{
     /**
@@ -38,10 +38,6 @@ class Mat2d extends Template<Float32Array>{
      */
     c1r2: number;
     /**
-     * The third entry in the first column of this Mat2d.
-     */
-    c1r3: number;
-    /**
      * The first entry in the second column of this Mat2d.
      */
     c2r1: number;
@@ -50,10 +46,6 @@ class Mat2d extends Template<Float32Array>{
      */
     c2r2: number;
     /**
-     * The third entry in the second column of this Mat2d.
-     */
-    c2r3: number;
-    /**
      * The first entry in the third column of this Mat2d.
      */
     c3r1: number;
@@ -61,10 +53,6 @@ class Mat2d extends Template<Float32Array>{
      * The second entry in the third column of this Mat2d.
      */
     c3r2: number;
-    /**
-     * The third entry in the third column of this Mat2d.
-     */
-    c3r3: number;
 
     /**
      * Computes the determinant of this Mat2d.
@@ -422,7 +410,7 @@ class Mat2d extends Template<Float32Array>{
      * @param sx the percentage by which to scale in the horizontal direction.
      * @param sy the percentage by which to scale in the vertical direction.
      */
-    postScale(this: Mat2d, sx: number, sy: number) {
+    postScale(sx: number, sy: number) {
         //Multiply first row by width ratio
         this.c1r1 *= sx; this.c2r1 *= sx; this.c3r1 *= sx;
         //Multiply second row by height ratio
