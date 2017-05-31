@@ -2,8 +2,7 @@ import { Mesh } from './mesh';
 import { Graphic } from "./graphic";
 import { IPoint, Point } from "../struct/point";
 import { Rect, IRect } from "../struct/rect";
-import { IMat2d, ScaleToFit } from '../struct/mat2d';
-import { Mat3Struct } from "../struct/mat3"
+import { IMat2d, Mat2dStruct, ScaleToFit } from '../struct/mat2d';
 import { Vec2 } from '../struct/vec2';
 
 /**
@@ -22,7 +21,7 @@ export class Shape extends Graphic {
      * @param mesh the static vertex and index data data for this shape.
      * @param matrix the initial transformation matrix. Defaults to identiy.
      */
-    constructor(mesh: Mesh, matrix?: Mat3Struct){
+    constructor(mesh: Mesh, matrix?: Mat2dStruct){
         super(matrix);
         this.mesh = mesh;
     }

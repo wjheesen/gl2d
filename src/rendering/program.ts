@@ -1,6 +1,7 @@
+import { Renderer } from './renderer';
 import { UniformLocations, AttribLocations } from './util'
 
-export abstract class Program<U extends UniformLocations, A extends AttribLocations>{
+export abstract class Program<R extends Renderer, U extends UniformLocations, A extends AttribLocations>{
 
     /**
      * The location of this program in WebGL.
@@ -18,9 +19,16 @@ export abstract class Program<U extends UniformLocations, A extends AttribLocati
     attribs: A;
 
     /**
-     * Binds this program and any associated buffers to the specified context.
+     * Called whenever this program is attached to a renderer.
+     * @param renderer the renderer that attached this program.
      */
-    abstract bind(gl: WebGLRenderingContext): void;
+    abstract onAttach(renderer: R): any;
+
+    /**
+     * Called whenever this program is detached from a renderer.
+     * @param renderer the renderer that detached this program.
+     */
+    abstract onDetach(renderer: R): any;
 }
 
-export type _Program = Program<UniformLocations, AttribLocations>;
+export type _Program = Program<Renderer, UniformLocations, AttribLocations>;

@@ -1,8 +1,7 @@
 import { Point, IPoint } from '../struct/point'
 import { IVec2 } from '../struct/vec2'
 import { Rect } from "../struct/rect";
-import { Mat2d, IMat2d } from "../struct/mat2d";
-import { Mat3Struct } from "../struct/mat3";
+import { Mat2d, Mat2dStruct, IMat2d } from "../struct/mat2d";
 
 /**
  * A graphic that can be transformed by altering its model matrix.
@@ -12,14 +11,14 @@ export abstract class Graphic {
     /**
      * The matrix that maps this graphic from model space to world space.
      */
-    matrix: Mat3Struct;
+    matrix: Mat2dStruct;
 
     /**
      * Creates a new graphic with the specified matrix transformation.
      * @param matrix the initial matrix transformation. Defaults to identity.
      */
-    constructor(matrix?: Mat3Struct) {
-        this.matrix = matrix || Mat3Struct.identity();
+    constructor(matrix?: Mat2dStruct) {
+        this.matrix = matrix || Mat2dStruct.identity();
     }
 
     /**
@@ -107,5 +106,30 @@ export abstract class Graphic {
      */
     transform(matrix: IMat2d) {
         this.matrix.postConcat(matrix);
+    }
+
+    /**
+     * Scales this graphic by the specified scale factors, with a pivot point at the center of the shape.
+     * @param sx the horizontal scale factor.
+     * @param sy the vertical scale factor.
+     */
+    scale(sx: number, sy: number){
+        this.transform(Mat2d.scale(sx, sy, this.measureCenter()));
+    }
+
+    /**
+     * Stretches this graphic by the specified ratio, with a pivot point at the center of the shape.
+     * @param ratio the percentage by which to scale in all directions.
+     */
+    stretch(ratio: number){
+        this.scale(ratio, ratio);
+    }
+
+    /**
+     * Scales this graphic by the specified angle, with a pivot point at the center of the shape.
+     * @param radians the angle in radians.
+     */
+    rotate(radians: number){
+        this.transform(Mat2d.rotate(radians, this.measureCenter()));
     }
 }
