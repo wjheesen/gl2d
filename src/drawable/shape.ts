@@ -1,3 +1,4 @@
+import { VertexBuffer } from '../struct/vertex';
 import { Mesh } from './mesh';
 import { Graphic } from "./graphic";
 import { IPoint, Point } from "../struct/point";
@@ -31,22 +32,28 @@ export class Shape extends Graphic {
      * @returns the boundaries of this shape, or null if the shape has no vertices.
      */
     measureBoundaries() {
+        return Shape.measureBoundaries(this.matrix, this.mesh.vertices);
+    }
+
+    /**
+     * Measures the boundaries of a shape in world space.
+     * @param matrix the matrix that maps the shape to world space.
+     * @param vertices the vertices of the shape in model space.
+     * @returns the boundaries of the shape, or null if the shape has no vertices.
+     */
+    static measureBoundaries(matrix: IMat2d, vertices: VertexBuffer){
         let bounds = <Rect> null;
-        let vertices = this.mesh.vertices;
-        let matrix = this.matrix;
-        // Map each mesh vertex to get the shape vertex that must be enclosed
         if(vertices.moveToFirst()){
-            // Enclose first shape vertex
+            // Enclose the first mapped vertex
             let vertex = new Point();
-            matrix.map(vertices, vertex);
+            IMat2d.map(matrix, vertices, vertex);
             bounds = Rect.unionOfPoints([vertex]);
-            // Enclose remaining vertices
+            // Enclose the remaining vertices
             while(vertices.moveToNext()){
-                 matrix.map(vertices, vertex);
-                 bounds.unionPoint(vertex);
+                IMat2d.map(matrix, vertices, vertex);
+                bounds.unionPoint(vertex);
             }
         }
-        // Bounds will be null if model has no vertices
         return bounds;
     }
 
@@ -103,16 +110,23 @@ export class Shape extends Graphic {
      * Stretch-rotates this shape across the line from p1 to p2.
      */
     stretchAcrossLine(p1: IPoint, p2: IPoint) {
-        let bounds = this.mesh.bounds;
+        return Shape.stretchAcrossLine(this.matrix, this.mesh, p1, p2);
+    }
+    
+    /**
+     * Sets the specified matrix to stretch rotate the specified mesh across the line from p1 to p2.
+     */
+    static stretchAcrossLine(matrix: IMat2d, mesh: Mesh, p1: IPoint, p2: IPoint) {
+        let bounds = mesh.bounds;
         let meshPivot = bounds.centerTop();
         let meshControl = bounds.centerBottom();
         // *Translate from mesh pivot to shape pivot
         let pivot = p1;
         let vec = Vec2.fromPointToPoint(meshPivot, pivot);
-        let start = Vec2.create(meshControl); start.add(vec);
-        let end = p2;
-        // Compute stretch rotation matrix
-        this.matrix.setStretchRotateToPoint(start, end, pivot);
-        this.matrix.preTranslate(vec); //*
+        let start = Vec2.create(meshControl); 
+        start.add(vec);
+        // Stretch rotate from translated control point to p2, with pivot at p1
+        IMat2d.setStretchRotateToPoint(matrix, start, p2, pivot);
+        IMat2d.preTranslate(matrix, vec); //*
     }
 }

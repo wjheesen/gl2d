@@ -1,4 +1,4 @@
-﻿import {IndexTupleBuffer} from'../struct/indextuple'
+﻿import { IndexTupleBuffer } from'../struct/indextuple'
 import { Vec2Struct } from '../struct/vec2'
 import { Mat2d } from '../struct/mat2d'
 import { Rect } from '../struct/rect'
