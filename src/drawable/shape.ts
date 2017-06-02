@@ -87,14 +87,14 @@ export class Shape extends Graphic {
     }
 
     /**
-     * Checks if this shape contains the point (x,y).
+     * Checks if this shape contains the specified point.
      * @param point the point to check.
      * @param inverse the inverse of this shape's model matrix. If undefined, the inverse matrix will be calculated on the fly.
      */
     contains(pt: IPoint, inverse?: IMat2d) {
         // This shape contains the point if its mesh contains the model point
-        let modelPoint = this.convertPointToModelSpace(pt, inverse);
-        return this.mesh.bounds.contains(modelPoint) && this.mesh.vertices.contains(modelPoint);
+        let modelPt = this.convertPointToModelSpace(pt, inverse);
+        return this.mesh.contains(modelPt);
     }
 
     /**

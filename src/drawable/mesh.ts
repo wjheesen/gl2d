@@ -3,6 +3,7 @@ import { Vec2Struct } from '../struct/vec2'
 import { Mat2d } from '../struct/mat2d'
 import { Rect } from '../struct/rect'
 import { VertexBuffer } from '../struct/vertex'
+import { IPoint } from "../struct/point";
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
@@ -255,6 +256,14 @@ export class Mesh {
         }
         // Return the indices
         return indices;
+    }
+
+   /**
+     * Checks if this mesh contains the specified point
+     * @param point the point to check.
+     */
+    contains(point: IPoint){
+        return this.bounds.contains(point) && this.vertices.contains(point);
     }
 }
 
