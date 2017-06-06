@@ -1,9 +1,9 @@
 ﻿import { IndexTupleBuffer } from'../struct/indextuple'
 import { Vec2Struct } from '../struct/vec2'
-import { Mat2d } from '../struct/mat2d'
+import { Mat2d, ScaleToFit } from '../struct/mat2d'
 import { Rect } from '../struct/rect'
 import { VertexBuffer } from '../struct/vertex'
-import { IPoint } from "../struct/point";
+import { IPoint, Point } from "../struct/point";
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
@@ -265,6 +265,7 @@ export class Mesh {
     contains(point: IPoint){
         return this.bounds.contains(point) && this.vertices.contains(point);
     }
+
 }
 
 export class MeshSource {
