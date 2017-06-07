@@ -50,10 +50,10 @@ class Color extends Template<Uint8Array>{
     * Extracts the (r,g,b,a) components of the specified ColorF into this color.
     */
     setFromColorF(src: IColorF) {
-        this.r = src.r * 0xff;
-        this.g = src.g * 0xff;
-        this.b = src.b * 0xff;
-        this.a = src.a * 0xff;
+        this.r = (src.r * 0xff) >> 0;
+        this.g = (src.g * 0xff) >> 0;
+        this.b = (src.b * 0xff) >> 0;
+        this.a = (src.a * 0xff) >> 0;
     }
 
     /**

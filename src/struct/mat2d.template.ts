@@ -62,6 +62,14 @@ class Mat2d extends Template<Float32Array>{
     }
 
     /**
+     * Checks if this Mat2d is exactly equal to the identity.
+     */
+    isIdentity(){
+        return this.c1r1 === 1 && this.c2r1 === 0 && this.c3r1 === 0 &&
+               this.c1r2 === 0 && this.c2r2 === 1 && this.c3r2 === 0; 
+    }
+
+    /**
      * Sets this matrix to the result of multiplying the specified matrices from left to right.
      * @param left the left hand matrix.
      * @param right the right hand matrix.
