@@ -1,9 +1,9 @@
-﻿import { IndexTupleBuffer } from'../struct/indextuple'
-import { Vec2Struct } from '../struct/vec2'
-import { Mat2d } from '../struct/mat2d'
-import { Rect } from '../struct/rect'
-import { VertexBuffer } from '../struct/vertex'
-import { IPoint } from "../struct/point";
+﻿import { IndexTupleBuffer } from '../struct/indextuple';
+import { Mat2d } from '../struct/mat2d';
+import { IPoint } from '../struct/point';
+import { Rect } from '../struct/rect';
+import { Vec2Struct } from '../struct/vec2';
+import { VertexBuffer } from '../struct/vertex';
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
@@ -86,9 +86,10 @@ export class Mesh {
     /**
      * Creates the mesh for a regular mesh with n sides.
      * @param n how many sides the mesh should have.
+     * @param isPointyTopped whether the polygon is pointy-topped (true) or flat-topped (false). Defaults to true.
      * @param id an optional id for the mesh.
      */
-    static polygon(n: number, id?: string) {
+    static polygon(n: number, isPointyTopped = true, id?: string) {
         // Generate the vertices
         let vertices = Mesh.polygonVertices(n);
         // Generate the indices
@@ -102,12 +103,12 @@ export class Mesh {
      * @param sides how many sides the mesh should have.
      * @param radius distance from center of mesh to a vertex.
      */
-    static polygonVertices(sides: number, radius = 1) {
+    static polygonVertices(sides: number) {
         // Create a mesh big enough to hold the n vertices
         let mesh = VertexBuffer.create(sides);
         // Translate the center point vertically by the
         // radius to get the first vertex.
-        let vertex = Vec2Struct.create$(0, radius);
+        let vertex = Vec2Struct.create$(0, 1);
         // Add the first vertex to the mesh
         mesh.put(vertex);
         //Create a matrix to rotate the vertex about the center point
@@ -142,13 +143,12 @@ export class Mesh {
     /**
      * Creates the mesh for a star with n points and the specified inner and outer radii.
      * @param n how many points the star should have.
-     * @param innerRadius distance from center of star to inner vertex.
-     * @param outerRadius distance from center of start to outer vertex.
+     * @param ratio ratio of the inner radius to the outer radius.
      * @param id an optional id for the mesh.
      */
-    static star(n: number, innerRadius: number, outerRadius: number, id: string) {
+    static star(n: number, ratio: number, id?: string) {
         // Generate the vertices
-        let vertices = Mesh.starVertices(n, innerRadius, outerRadius);
+        let vertices = Mesh.starVertices(n, ratio);
         // Generate the indices
         let indices = Mesh.starIndices(n);
         //Construct the mesh and return
@@ -158,10 +158,9 @@ export class Mesh {
     /**
      * Generates the vertices for a star centered at (0,0).
      * @param points how many points the star should have.
-     * @param innerRadius distance from center of star to an inner vertex.
-     * @param outerRadius distance from center of start to an outer vertex.
+     * @param ratio ratio of the inner radius to the outer radius.
      */
-    static starVertices(points: number, innerRadius: number, outerRadius: number) {
+    static starVertices(points: number, ratio: number) {
         // Create mesh big enough to hold the n inner vertices and n outer vertices
         let mesh = VertexBuffer.create(points + points);
         // Calculate the rotation angle
@@ -170,10 +169,10 @@ export class Mesh {
         let rotation = new Mat2d();
         // Translate the center point vertically by the
         // outer radius to get the first outer vertex.
-        let outerVertex = Vec2Struct.create$(0, outerRadius);
+        let outerVertex = Vec2Struct.create$(0, 1);
         // Translate the center point vertically by the inner radius
         // and rotate by half the angle to get the first inner vertex
-        let innerVertex = Vec2Struct.create$(0, innerRadius);
+        let innerVertex = Vec2Struct.create$(0, ratio);
         rotation.setRotate(0.5 * angle);
         rotation.map(innerVertex, innerVertex);
         // Add the first outer and inner vertices to the mesh
