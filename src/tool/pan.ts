@@ -8,32 +8,32 @@ export class PanTool extends _MouseOrTouchTool {
 
     private previous: IPoint;
 
-    onAction(action: _SurfaceMouseOrTouchEvent): void {
+    onSurfaceEvent(event: _SurfaceMouseOrTouchEvent): void {
         // Check previous point is set
         if(!this.previous){
-            return this.onStart(action);
+            return this.onStart(event);
         } 
 
         // Delegate based on status of action
-        switch(action.status){
+        switch(event.status){
             case Status.Start:
-                return this.onStart(action);
+                return this.onStart(event);
             case Status.Drag:
-                return this.onDrag(action);
+                return this.onDrag(event);
             case Status.End:
                 this.previous = null;
         }
     }
     
-    onStart(action: _SurfaceMouseOrTouchEvent) {
-        this.previous = this.getPrimaryPointer(action);
+    onStart(event: _SurfaceMouseOrTouchEvent) {
+        this.previous = this.getPrimaryPointer(event);
     }
 
-    onDrag(action: _SurfaceMouseOrTouchEvent) {
-        let current = this.getPrimaryPointer(action);
+    onDrag(event: _SurfaceMouseOrTouchEvent) {
+        let current = this.getPrimaryPointer(event);
         // Translate by vector from current point to previous point (reverse direction)
         let toPrevious = Vec2.fromPointToPoint(current, this.previous);
-        let actual = action.target.offset(toPrevious);
+        let actual = event.target.offset(toPrevious);
         // Keep track of previous point
         this.previous.x = current.x + actual.x;
         this.previous.y = current.y + actual.y;

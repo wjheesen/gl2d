@@ -9,39 +9,39 @@ export class PinchZoomTool implements _TouchTool {
     private previousSpan: number;
     private previousFocus: IPoint;
 
-    onAction(action: _SurfaceTouchEvent): void {
+    onSurfaceEvent(event: _SurfaceTouchEvent): void {
         // Check two pointers are down
-        if(action.pointers.length < 2){
+        if(event.pointers.length < 2){
             return;
         }
         // Check previous focus point is set
         if(!this.previousFocus){
-            return this.onStart(action);
+            return this.onStart(event);
         } 
         // Delegate based on status of action
-        switch(action.status){
+        switch(event.status){
             case Status.Start:
-                return this.onStart(action);
+                return this.onStart(event);
             case Status.Drag:
-                return this.onDrag(action);
+                return this.onDrag(event);
             case Status.End:
                 this.previousFocus = null;
         }
     }
 
-    onStart(action: _SurfaceTouchEvent) {
-        let p1 = action.pointers[0];
-        let p2 = action.pointers[1];
+    onStart(event: _SurfaceTouchEvent) {
+        let p1 = event.pointers[0];
+        let p2 = event.pointers[1];
         this.previousSpan = IPoint.distance(p1, p2);
         this.previousFocus = Point.midpoint(p1, p2);
     }
 
-    onDrag(action: _SurfaceTouchEvent) {
-        let p1 = action.pointers[0];
-        let p2 = action.pointers[1];
+    onDrag(event: _SurfaceTouchEvent) {
+        let p1 = event.pointers[0];
+        let p2 = event.pointers[1];
         let span = IPoint.distance(p1, p2);
         let focus = Point.midpoint(p1, p2);
-        let surface = action.target;
+        let surface = event.target;
         let camera = surface.renderer.camera;
         let actualScale = camera.zoomIn(span / this.previousSpan);
         let toFocusPoint = Vec2.fromPointToPoint(focus, this.previousFocus);

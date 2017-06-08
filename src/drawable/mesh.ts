@@ -45,11 +45,13 @@ export class Mesh {
      * @param vertices the mesh vertices.
      * @param indices the indices that divide the mesh into renderable triangles.
      * @param bounds the boundaries of the mesh.
+     * @param id an optional id for this mesh.
      */
-    constructor(vertices: VertexBuffer, indices?: IndexTupleBuffer, bounds = vertices.measureBoundaries()) {
+    constructor(vertices: VertexBuffer, indices?: IndexTupleBuffer, id?: string, bounds = vertices.measureBoundaries()) {
         this.vertices = vertices;
         this.indices = indices;
         this.bounds = bounds;
+        this.id = id;
     }
 
     /**
@@ -78,82 +80,21 @@ export class Mesh {
             }
         }
 
-        return new Mesh(vertices, indices)
+        return new Mesh(vertices, indices, source.id)
     }
 
     /**
      * Creates the mesh for a regular mesh with n sides.
      * @param n how many sides the mesh should have.
+     * @param id an optional id for the mesh.
      */
-    static polygon(n: number) {
+    static polygon(n: number, id?: string) {
         // Generate the vertices
         let vertices = Mesh.polygonVertices(n);
         // Generate the indices
         let indices = Mesh.polygonIndices(n);
         //Construct the mesh and return
-        return new Mesh(vertices, indices);
-    }
-
-    /**
-     * Creates the mesh for a star with n points and the specified inner and outer radii.
-     * @param n how many points the star should have.
-     * @param innerRadius distance from center of star to inner vertex.
-     * @param outerRadius distance from center of start to outer vertex.
-     */
-    static star(n: number, innerRadius: number, outerRadius: number) {
-        // Generate the vertices
-        let vertices = Mesh.starVertices(n, innerRadius, outerRadius);
-        // Generate the indices
-        let indices = Mesh.starIndices(n);
-        //Construct the mesh and return
-        return new Mesh(vertices, indices);
-    }
-
-    /**
-     * Creates the mesh for a 4 vertex diamond.
-     */
-    static diamond() {
-        return Mesh.star(2, .5, 1)
-    }
-
-    /**
-     * Creates the mesh for a square.
-     */
-    static square() {
-        return Mesh.rectangle(Rect.ltrb(0, 1, 1, 0));
-    }
-
-    /**
-     * Creates the mesh for a rectangle
-     */
-    static rectangle(rect: Rect) {
-        // Extract the verties from the rect
-        let vertices = Mesh.rectVertices(rect);
-        // Indices are same as mesh(4)
-        let indices = Mesh.polygonIndices(4);
-        // Construct mesh and return
-        return new Mesh(vertices, indices, rect);
-    }
-
-    /**
-     * Creates the mesh for a 5 point star.
-     */
-    static star5() {
-        return Mesh.star(5, 0.4, 1); //Star
-    }
-
-    /**
-     * Extracts the vertices from the specified rect into a new vertex buffer.
-     * @param rect the rect from which to extract the vertices.
-     */
-    static rectVertices(rect: Rect) {
-        return new VertexBuffer(
-            new Float32Array([
-                rect.left, rect.top,
-                rect.left, rect.bottom,
-                rect.right, rect.bottom,
-                rect.right, rect.top])
-        );
+        return new Mesh(vertices, indices, id);
     }
 
     /**
@@ -196,6 +137,22 @@ export class Mesh {
         }
         // Return the indices
         return indices;
+    }
+
+    /**
+     * Creates the mesh for a star with n points and the specified inner and outer radii.
+     * @param n how many points the star should have.
+     * @param innerRadius distance from center of star to inner vertex.
+     * @param outerRadius distance from center of start to outer vertex.
+     * @param id an optional id for the mesh.
+     */
+    static star(n: number, innerRadius: number, outerRadius: number, id: string) {
+        // Generate the vertices
+        let vertices = Mesh.starVertices(n, innerRadius, outerRadius);
+        // Generate the indices
+        let indices = Mesh.starIndices(n);
+        //Construct the mesh and return
+        return new Mesh(vertices, indices, id);
     }
 
     /**

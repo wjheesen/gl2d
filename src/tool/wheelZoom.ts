@@ -1,10 +1,10 @@
 import { _SurfaceWheelEvent } from '../event/scroll';
-import { _ScrollTool } from './scroll';
+import { _WheelTool } from './wheel';
 
 /**
  * Tool for zooming in and out of a surface based on scroll events and cursor position.
  */
-export class ScrollZoomTool implements _ScrollTool {
+export class WheelZoomTool implements _WheelTool {
 
     /**
      * The scale applied to the surface when zooming in. The inverse is applied when zooming out.
@@ -30,13 +30,13 @@ export class ScrollZoomTool implements _ScrollTool {
         this.minTimeElapse = minTimeElapse;
     }
 
-    onAction(action: _SurfaceWheelEvent){
-        let surface = action.target;
+    onSurfaceEvent(event: _SurfaceWheelEvent){
+        let surface = event.target;
         let currentTime = Date.now();
         let timeEllapsed = currentTime - this.timeOfLastScale;
         if(timeEllapsed > this.minTimeElapse){
-            let scaleFactor = action.isUpward ? this.scaleFactor : 1/this.scaleFactor;
-            surface.zoomToPoint(scaleFactor, action.cursor);
+            let scaleFactor = event.isUpward ? this.scaleFactor : 1/this.scaleFactor;
+            surface.zoomToPoint(scaleFactor, event.cursor);
             this.timeOfLastScale = currentTime;
         }
     }

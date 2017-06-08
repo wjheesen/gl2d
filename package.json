@@ -1,6 +1,6 @@
 {
   "name": "gl2d",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "2D graphics package for WebGL",
   "main": "index.js",
   "typings": "index.d.ts",
