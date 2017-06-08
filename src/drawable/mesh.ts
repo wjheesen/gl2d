@@ -84,14 +84,14 @@ export class Mesh {
     }
 
     /**
-     * Creates the mesh for a regular mesh with n sides.
-     * @param n how many sides the mesh should have.
-     * @param isPointyTopped whether the polygon is pointy-topped (true) or flat-topped (false). Defaults to true.
+     * Creates the mesh for a regular polygon with n sides.
+     * @param n how many sides the polygon should have.
+     * @param isFlatTopped whether the polygon is flat-topped (true) or pointy-topped (false). Defaults to false.
      * @param id an optional id for the mesh.
      */
-    static polygon(n: number, isPointyTopped = true, id?: string) {
+    static polygon(n: number, isFlatTopped = false, id?: string) {
         // Generate the vertices
-        let vertices = Mesh.polygonVertices(n);
+        let vertices = Mesh.polygonVertices(n, isFlatTopped);
         // Generate the indices
         let indices = Mesh.polygonIndices(n);
         //Construct the mesh and return
@@ -99,26 +99,25 @@ export class Mesh {
     }
 
     /**
-     * Generates the vertices for a regular mesh centered at (0,0).
-     * @param sides how many sides the mesh should have.
-     * @param radius distance from center of mesh to a vertex.
+     * Generates the vertices for a regular polygon centered at (0,0).
+     * @param n how many sides the polygon should have.
+     * @param isFlatTopped whether the polygon is flat-topped (true) or pointy-topped (false). Defaults to false.
      */
-    static polygonVertices(sides: number) {
+    static polygonVertices(n: number, isFlatTopped = false) {
         // Create a mesh big enough to hold the n vertices
-        let mesh = VertexBuffer.create(sides);
-        // Translate the center point vertically by the
-        // radius to get the first vertex.
+        let mesh = VertexBuffer.create(n);
+        // Create a matrix to rotate from vertex to vertex
+        let angle = 2 * Math.PI / n;
+        let rotation = Mat2d.rotate(angle)
+        // Begin with the vertex (1,0), rotating for flat top polygon if requested
         let vertex = Vec2Struct.create$(0, 1);
-        // Add the first vertex to the mesh
+        if(isFlatTopped){ Mat2d.rotate(angle/2).map(vertex, vertex); }
         mesh.put(vertex);
-        //Create a matrix to rotate the vertex about the center point
-        let rotation = Mat2d.rotate(2 * Math.PI / sides);
         //Perform the rotation and add the result to the array until it is full
         while (mesh.hasValidPosition()) {
             rotation.map(vertex, vertex);
             mesh.put(vertex);
         }
-        // Return the path
         return mesh;
     }
 
