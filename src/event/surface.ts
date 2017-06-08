@@ -1,6 +1,6 @@
 import { _Surface } from '../rendering/surface';
 
-export interface Action<S extends _Surface, E extends Event> {
+export interface SurfaceEvent<S extends _Surface, E extends Event> {
 
     /**
      * The surface targeted by this action.
@@ -14,4 +14,4 @@ export interface Action<S extends _Surface, E extends Event> {
 
 }
 
-export type _Action = Action<_Surface, Event>;
+export type _SurfaceEvent = SurfaceEvent<_Surface, Event>;

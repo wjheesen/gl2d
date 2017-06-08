@@ -1,5 +1,5 @@
 /**
- * The status of an action.
+ * The status of a surface event.
  */
 export const enum Status {
     /**

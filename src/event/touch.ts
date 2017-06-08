@@ -1,9 +1,9 @@
 import { _Surface } from '../rendering/surface';
-import {Action} from './action'
-import {Status} from './status'
-import {IPoint} from '../struct/point'
+import { IPoint } from '../struct/point';
+import { Status } from './status';
+import { SurfaceEvent } from './surface';
 
-export interface TouchAction<S extends _Surface> extends Action<S, TouchEvent>{
+export interface SurfaceTouchEvent<S extends _Surface> extends SurfaceEvent<S, TouchEvent>{
 
     /**
      * The status of this action: Start, Move, End, or Leave.
@@ -16,4 +16,4 @@ export interface TouchAction<S extends _Surface> extends Action<S, TouchEvent>{
     pointers: IPoint[];
 }
 
-export type _TouchAction = TouchAction<_Surface>;
+export type _SurfaceTouchEvent = SurfaceTouchEvent<_Surface>;

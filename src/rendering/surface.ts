@@ -1,11 +1,11 @@
-import {Renderer} from './renderer'
-import {IPoint, Point} from '../struct/point'
-import {Vec2} from '../struct/vec2'
-import {ScreenPoint} from '../action/screenpoint'
-import {Status} from '../action/status'
-import {MouseAction } from '../action/mouse';
-import {TouchAction} from '../action/touch'
-import {ScrollAction} from '../action/scroll'
+import { SurfaceMouseEvent } from '../event/mouse';
+import { ScreenPoint } from '../event/screenpoint';
+import { SurfaceWheelEvent } from '../event/scroll';
+import { Status } from '../event/status';
+import { SurfaceTouchEvent } from '../event/touch';
+import { IPoint, Point } from '../struct/point';
+import { Vec2 } from '../struct/vec2';
+import { Renderer } from './renderer';
 
 /**
  * A rendering surface linked to an HTMLCanvasElement (the drawing buffer).
@@ -200,7 +200,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a mouse action occurs on this surface.
      */
-    onMouseAction(callback: (action: MouseAction<this>) => void){
+    onMouseEvent(callback: (action: SurfaceMouseEvent<this>) => void){
         /**
          * Whether or not a mouse button is currently pressed.
          */
@@ -216,7 +216,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Start));
+            callback(this.getSurfaceMouseEvent(e, Status.Start));
         }, false);
         window.addEventListener("mousemove", e => {
             // If mouse is pressed
@@ -225,10 +225,10 @@ export class Surface<R extends Renderer> {
                 e.preventDefault();
                 e.stopPropagation();
                 // Process as a drag action
-                callback(this.getMouseAction(e, Status.Drag));
+                callback(this.getSurfaceMouseEvent(e, Status.Drag));
             } else {
                 // Otherwise process as a move action
-                callback(this.getMouseAction(e, Status.Move));
+                callback(this.getSurfaceMouseEvent(e, Status.Move));
             }
         }, false);
         window.addEventListener("mouseout", e => {
@@ -238,7 +238,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.Leave));
+            callback(this.getSurfaceMouseEvent(e, Status.Leave));
         }, false);
         window.addEventListener("mouseup", e => {
             // Ignore if mouse not pressed
@@ -249,11 +249,11 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getMouseAction(e, Status.End));
+            callback(this.getSurfaceMouseEvent(e, Status.End));
         }, false);
     }
 
-    private getMouseAction(event: MouseEvent, status: Status): MouseAction<this> {
+    private getSurfaceMouseEvent(event: MouseEvent, status: Status): SurfaceMouseEvent<this> {
         return {
             target: this,
             src: event,
@@ -265,7 +265,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a touch action occurs on this surface.
      */
-    onTouchAction(callback: (action: TouchAction<this>) => void){
+    onTouchEvent(callback: (action: SurfaceTouchEvent<this>) => void){
 
         /**
          * Whether or no a touch event is currently active.
@@ -282,7 +282,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getTouchAction(e, Status.Start));
+            callback(this.getSurfaceTouchEvent(e, Status.Start));
         }, false);
         window.addEventListener("touchmove", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
@@ -291,7 +291,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getTouchAction(e, Status.Drag));
+            callback(this.getSurfaceTouchEvent(e, Status.Drag));
         }, false);
         window.addEventListener("touchleave", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
@@ -300,7 +300,7 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getTouchAction(e, Status.Leave));
+            callback(this.getSurfaceTouchEvent(e, Status.Leave));
         }, false);
         window.addEventListener("touchend", (e: TouchEvent) => {
             // Don't send callback if touch action did not originate inside the element
@@ -311,11 +311,11 @@ export class Surface<R extends Renderer> {
             e.preventDefault();
             e.stopPropagation();
             // Get action and pass to callback
-            callback(this.getTouchAction(e, Status.End));
+            callback(this.getSurfaceTouchEvent(e, Status.End));
         }, false);
     }
 
-    private getTouchAction(event: TouchEvent, status: Status): TouchAction<this> {
+    private getSurfaceTouchEvent(event: TouchEvent, status: Status): SurfaceTouchEvent<this> {
         return {
             target: this,
             src: event,
@@ -337,7 +337,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a scroll action occurs on this surface.
      */
-    onScrollAction(callback: (action: ScrollAction<this>) => void) {
+    onScrollAction(callback: (action: SurfaceWheelEvent<this>) => void) {
         document.addEventListener(this.getScrollSupport(), (e: WheelEvent | MouseWheelEvent) => {
             if(e.target === this.drawingBuffer){
                 e.preventDefault();

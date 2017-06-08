@@ -11,6 +11,11 @@ import { IPoint } from "../struct/point";
 export class Mesh {
 
     /**
+     * Optional string identifier for this mesh.
+     */
+    public id?: string;
+
+    /**
      * The vertex data.
      */
     public vertices: VertexBuffer;
@@ -271,4 +276,5 @@ export class Mesh {
 export class MeshSource {
     vertices: number[] | Float32Array | VertexBuffer; 
     indices?: number[] | Uint16Array | IndexTupleBuffer;
+    id?: string;
 }

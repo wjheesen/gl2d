@@ -1,4 +1,4 @@
-import { _ScrollAction } from '../action/scroll';
+import { _SurfaceWheelEvent } from '../event/scroll';
 import { _ScrollTool } from './scroll';
 
 /**
@@ -30,7 +30,7 @@ export class ScrollZoomTool implements _ScrollTool {
         this.minTimeElapse = minTimeElapse;
     }
 
-    onAction(action: _ScrollAction){
+    onAction(action: _SurfaceWheelEvent){
         let surface = action.target;
         let currentTime = Date.now();
         let timeEllapsed = currentTime - this.timeOfLastScale;
