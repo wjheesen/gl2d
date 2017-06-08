@@ -140,6 +140,33 @@ export class Mesh {
     }
 
     /**
+     * Creates the mesh for a rectangle
+     * @param id an optional id for the mesh.
+     */
+     static rectangle(rect: Rect, id?: string) {
+         // Extract the verties from the rect
+         let vertices = Mesh.rectVertices(rect);
+         // Indices are same as mesh(4)
+         let indices = Mesh.polygonIndices(4);
+         // Construct mesh and return
+         return new Mesh(vertices, indices, id, rect);
+     }
+
+    /**
+      * Extracts the vertices from the specified rect into a new vertex buffer.
+      * @param rect the rect from which to extract the vertices.
+      */
+     static rectVertices(rect: Rect) {
+         return new VertexBuffer(
+             new Float32Array([
+                 rect.left, rect.top,
+                 rect.left, rect.bottom,
+                 rect.right, rect.bottom,
+                 rect.right, rect.top])
+         );
+      }
+
+    /**
      * Creates the mesh for a star with n points and the specified inner and outer radii.
      * @param n how many points the star should have.
      * @param ratio ratio of the inner radius to the outer radius.
