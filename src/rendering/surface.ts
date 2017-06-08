@@ -337,7 +337,7 @@ export class Surface<R extends Renderer> {
     /**
      * Invokes the specified callback whenever a scroll action occurs on this surface.
      */
-    onScrollAction(callback: (action: SurfaceWheelEvent<this>) => void) {
+    onWheelEvent(callback: (action: SurfaceWheelEvent<this>) => void) {
         document.addEventListener(this.getScrollSupport(), (e: WheelEvent | MouseWheelEvent) => {
             if(e.target === this.drawingBuffer){
                 e.preventDefault();
