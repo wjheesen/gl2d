@@ -19,7 +19,7 @@ class Point extends Template<Float32Array>{
     /**
      * Sets this point to the midpoint of p1 and p2.
      */
-    setMidpoint(@like p1: Point,@like p2: Point) {
+    setMidpoint(@like p1: Point, @like p2: Point) {
         this.x = 0.5 * (p1.x + p2.x);
         this.y = 0.5 * (p1.y + p2.y);
     }

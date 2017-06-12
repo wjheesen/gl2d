@@ -104,9 +104,9 @@ class Mat2d extends Template<Float32Array>{
      * Sets this Mat2d to map src into dst using the specified scale to fit option.
      * @param src the source rectangle.
      * @param dst the destination rectangle.
-     * @param stf the scale to fit option.
+     * @param stf the scale to fit option. Defaults to fill.
      */
-    setRectToRect(src: Rect, dst: Rect, stf: ScaleToFit) {
+    setRectToRect(src: Rect, dst: Rect, stf = ScaleToFit.Fill) {
 
         //Determine which points to match based on the scale to fit option.
         let srcPoint: Point,

@@ -42,7 +42,7 @@ export abstract class Graphic {
      * @param dst where to store the result.
      * @returns dst.
      */
-    convertPointToWorldSpace(pointInModel: PointLike, dst: PointLike = new Point()){
+    convertPointToWorldSpace(pointInModel: PointLike, dst = new Point()){
         this.matrix.map(pointInModel, dst);
         return dst;
     }
@@ -54,7 +54,7 @@ export abstract class Graphic {
      * @param dst where to write the result. Defaults to new point.
      * @returns dst.
      */
-    convertPointToModelSpace(pointInWorld: PointLike, inverse = Mat2d.inverse(this.matrix), dst: PointLike = new Point()){
+    convertPointToModelSpace(pointInWorld: PointLike, inverse = Mat2d.inverse(this.matrix), dst = new Point()){
         inverse.map(pointInWorld, dst);
         return dst;
     }
