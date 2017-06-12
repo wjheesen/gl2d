@@ -46,11 +46,11 @@ export class Shape extends Graphic {
         if(vertices.moveToFirst()){
             // Enclose the first mapped vertex
             let vertex = new Point();
-            matrix.map(vertex, vertex);
+            matrix.map(vertices, vertex);
             bounds = Rect.unionOfPoints([vertex]);
             // Enclose the remaining vertices
             while(vertices.moveToNext()){
-                matrix.map(vertex, vertex);
+                matrix.map(vertices, vertex);
                 bounds.unionPoint(vertex);
             }
         }
