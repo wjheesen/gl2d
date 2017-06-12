@@ -1,7 +1,7 @@
-import { IPoint } from '../struct/point';
-import { IVec2, Vec2, Vec2Struct } from '../struct/vec2';
+import { Mat4Struct } from '../struct/mat4';
+import { PointLike } from '../struct/point';
 import { Rect, RectStruct } from '../struct/rect';
-import { Mat4Struct } from '../struct/mat4'
+import { Vec2, Vec2Like, Vec2Struct } from '../struct/vec2';
 
 /**
  * Defines an orthographic projection from target space to clip space.
@@ -92,7 +92,7 @@ export class Camera {
      * @param desiredOffset the desired offset. 
      * @returns the actual offset.
      */
-    offset(desiredOffset: IVec2) {
+    offset(desiredOffset: Vec2Like) {
         let targetPosition = Vec2.create(this.position);
         targetPosition.add(desiredOffset);
 
@@ -176,7 +176,7 @@ export class Camera {
      * @param focus the focus point. 
      * @returns the actual scale factor and offset.
      */
-    zoomToPoint(desiredScaleFactor: number, focus: IPoint) {
+    zoomToPoint(desiredScaleFactor: number, focus: PointLike) {
         let view = this.view;
         // Convert (x,y) coordinates to [0,1] space
         let normX = (focus.x - view.left) / view.width();

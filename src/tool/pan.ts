@@ -2,11 +2,11 @@ import { _SurfaceMouseOrTouchEvent } from '../event/mouseOrTouch';
 import { _MouseOrTouchTool } from './mouseOrTouch';
 import { Status } from '../event/status';
 import { Vec2 } from '../struct/vec2';
-import { IPoint } from '../struct/point';
+import { Point } from '../struct/point';
 
 export class PanTool extends _MouseOrTouchTool {
 
-    private previous: IPoint;
+    private previous: Point;
 
     onSurfaceEvent(event: _SurfaceMouseOrTouchEvent): void {
         // Check previous point is set

@@ -1,6 +1,7 @@
-﻿import {Template} from'gulp-structify/template'
-import {IPoint, Point} from './point'
-import {IVec2 } from './vec2'
+﻿import { Point, PointLike } from './point';
+import { Vec2Like } from './vec2';
+import { Template } from 'gulp-structify/template';
+import { like } from "gulp-structify/like";
 
 /**
  * A rectangle with (left, top, right, bottom) boundaries.
@@ -129,63 +130,63 @@ class Rect extends Template<Float32Array> {
      * Gets the point at the center of this Rect
      */
     center() {
-        return Point.create$(this.centerX(), this.centerY());
+        return new Point(this.centerX(), this.centerY());
     }
 
     /**
      * Gets the point between the top left and top right corners of this Rect.
      */
     centerTop() {
-        return Point.create$(this.centerX(), this.top);
+        return new Point(this.centerX(), this.top);
     };
 
     /**
      *  Gets the point between the bottom left and bottom right corners of this Rect.
      */
     centerBottom() {
-        return Point.create$(this.centerX(), this.bottom);
+        return new Point(this.centerX(), this.bottom);
     };
 
     /**
      * Gets the point between the top and bottom left corners of this Rect.
      */
     centerLeft() {
-        return Point.create$(this.left, this.centerY());
+        return new Point(this.left, this.centerY());
     };
 
     /**
      * Gets the point between the top and bottom right corners of this Rect.
      */
     centerRight() {
-        return Point.create$(this.right, this.centerY());
+        return new Point(this.right, this.centerY());
     };
 
     /**
      * Gets the point at the bottom left corner of this Rect.
      */
     bottomLeft() {
-        return Point.create$(this.left, this.bottom);
+        return new Point(this.left, this.bottom);
     }
 
     /**
      * Gets the point at the bottom right corner of this Rect.
      */
     bottomRight() {
-        return Point.create$(this.right, this.bottom);
+        return new Point(this.right, this.bottom);
     }
 
     /**
      * Gets the point at the top left corner of this Rect.
      */
     topLeft() {
-        return Point.create$(this.left, this.top);
+        return new Point(this.left, this.top);
     }
 
     /**
      * Gets the point at the top right corner of this Rect.
      */
     topRight() {
-        return Point.create$(this.right, this.top);
+        return new Point(this.right, this.top);
     }
 
     /**
@@ -208,7 +209,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Sets this Rect to the smallest rectangle containing the two specified points.
      */
-    setUnionOfPoints(points: IPoint[], offset = 0, count = points.length) {
+    setUnionOfPoints(points: PointLike[], offset = 0, count = points.length) {
         //Enclose the first point 
         this.left = this.right = points[offset].x;
         this.top = this.bottom = points[offset].y;
@@ -233,7 +234,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect contains the other Rect.
      */
-    containsRect(other: Rect) {
+    containsRect(@like other: Rect) {
         return this.left <= other.left && other.right <= this.right &&
             this.bottom <= other.bottom && other.top <= this.top;
     }
@@ -241,7 +242,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect contains the specified point.
      */
-    contains(p: IPoint) {
+    contains(p: PointLike) {
         return this.contains$(p.x, p.y);
     }
 
@@ -255,7 +256,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Checks if this Rect intersects the other Rect.
      */
-    intersects(other: Rect) {
+    intersects(@like other: Rect) {
         return this.right >= other.left && other.right >= this.left
             && this.top >= other.bottom && other.top >= this.bottom;
     }
@@ -263,7 +264,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Sets this Rect to the intersection of itself with the other Rect.
      */
-    intersect(other: Rect) {
+    intersect(@like other: Rect) {
         this.left = Math.max(this.left, other.left);
         this.right = Math.min(this.right, other.right);
         this.bottom = Math.max(this.bottom, other.bottom);
@@ -273,7 +274,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Expands this Rect to enclose the other Rect.
      */
-    union(other: Rect) {
+    union(@like other: Rect) {
         this.left = Math.min(this.left, other.left);
         this.right = Math.max(this.right, other.right);
         this.bottom = Math.min(this.bottom, other.bottom);
@@ -283,7 +284,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Expands this Rect to enclose the specified point.
      */
-    unionPoint(p: IPoint) {
+    unionPoint(p: PointLike) {
         this.unionPoint$(p.x, p.y);
     }
 
@@ -303,7 +304,7 @@ class Rect extends Template<Float32Array> {
      * @param offset offset of the first point in the subset.
      * @param count number of points in the subset.
      */
-    unionPoints(points: IPoint[], offset = 0, count = points.length) {
+    unionPoints(points: PointLike[], offset = 0, count = points.length) {
         //For each of the points in the subset
         while (count-- > 0) {
             //Expand this Rect to enclose the point
@@ -328,7 +329,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Insets the boundaries of this Rect by the specified vector.
      */
-    inset(vec: IVec2) {
+    inset(vec: Vec2Like) {
         this.inset$(vec.x, vec.y);
     }
 
@@ -345,7 +346,7 @@ class Rect extends Template<Float32Array> {
     /**
      * Offsets the boundaries of this Rect by the specified vector.
      */
-    offset(vec: IVec2) {
+    offset(vec: Vec2Like) {
         this.offset$(vec.x, vec.y);
     }
 

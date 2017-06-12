@@ -1,4 +1,8 @@
 {
-  "extends": "../tsconfig",
-  "include": ["./*"]
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "noUnusedLocals": false
+  },
+  "include": ["./*.template.ts"]
 }

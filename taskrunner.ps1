@@ -19,8 +19,7 @@ function Update-Package(){
 
 
 function Update-Gulpfile(){
-    Set-Location $PSScriptRoot
-    tsc 
+    tsc "$PSScriptRoot\gulpfile.ts"
 }
 
 function Update-Shaders(){

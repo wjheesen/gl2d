@@ -1,7 +1,7 @@
-import { Point, IPoint } from '../struct/point'
-import { IVec2 } from '../struct/vec2'
+import { Point, PointLike } from '../struct/point'
+import { Vec2Like } from '../struct/vec2'
 import { Rect } from "../struct/rect";
-import { Mat2d, Mat2dStruct, IMat2d } from "../struct/mat2d";
+import { Mat2d, Mat2dStruct } from '../struct/mat2d';
 
 /**
  * A graphic that can be transformed by altering its model matrix.
@@ -33,7 +33,7 @@ export abstract class Graphic {
      * @returns the position of the center point in world space.
      */
     measureCenter(){
-        return Point.create$(this.matrix.c3r1, this.matrix.c3r2);
+        return new Point(this.matrix.c3r1, this.matrix.c3r2);
     }
 
     /**
@@ -42,7 +42,7 @@ export abstract class Graphic {
      * @param dst where to store the result.
      * @returns dst.
      */
-    convertPointToWorldSpace(pointInModel: IPoint, dst: IPoint = new Point()){
+    convertPointToWorldSpace(pointInModel: PointLike, dst: PointLike = new Point()){
         this.matrix.map(pointInModel, dst);
         return dst;
     }
@@ -54,9 +54,8 @@ export abstract class Graphic {
      * @param dst where to write the result. Defaults to new point.
      * @returns dst.
      */
-    convertPointToModelSpace(pointInWorld: IPoint, inverseModelMatrix: IMat2d = Mat2d.inverse(this.matrix)){
-        let dst = new Point();
-        IMat2d.map(inverseModelMatrix, pointInWorld, dst);
+    convertPointToModelSpace(pointInWorld: PointLike, inverse = Mat2d.inverse(this.matrix), dst: PointLike = new Point()){
+        inverse.map(pointInWorld, dst);
         return dst;
     }
 
@@ -66,12 +65,12 @@ export abstract class Graphic {
      * @param inverse the inverse of this graphic's model matrix. If undefined, the inverse matrix will be calculated on the fly, resulting in a potential performance hit.
      * @returns true if the point lies on or within this graphic; false otherwise.
      */
-    abstract contains(pt: IPoint, inverse?: IMat2d): boolean;
+    abstract contains(pt: PointLike, inverse?: Mat2d): boolean;
 
     /**
      * Offsets this graphic by the specified vector.
      */
-    offset(vec: IVec2) {
+    offset(vec: Vec2Like) {
         this.offset$(vec.x, vec.y);
     }
 
@@ -87,7 +86,7 @@ export abstract class Graphic {
      * Assumes the model for the graphic is centered at the origin.
      * @param center the new center point for this graphic.
      */
-    offsetTo(center: IPoint){
+    offsetTo(center: PointLike){
         this.offsetTo$(center.x, center.y);
     }
 
@@ -104,7 +103,7 @@ export abstract class Graphic {
      * Transforms this graphic by the specified matrix.
      * @param matrix the transformation matrix.
      */
-    transform(matrix: IMat2d) {
+    transform(matrix: Mat2d) {
         this.matrix.postConcat(matrix);
     }
 

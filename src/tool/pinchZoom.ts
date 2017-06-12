@@ -2,12 +2,12 @@ import { Vec2 } from '../struct/vec2';
 import { Status } from '../event/status';
 import { _SurfaceTouchEvent } from '../event/touch';
 import { _TouchTool } from './touch';
-import { IPoint, Point } from "../struct/point";
+import { Point } from "../struct/point";
 
 export class PinchZoomTool implements _TouchTool {
 
     private previousSpan: number;
-    private previousFocus: IPoint;
+    private previousFocus: Point;
 
     onSurfaceEvent(event: _SurfaceTouchEvent): void {
         // Check two pointers are down
@@ -32,14 +32,14 @@ export class PinchZoomTool implements _TouchTool {
     onStart(event: _SurfaceTouchEvent) {
         let p1 = event.pointers[0];
         let p2 = event.pointers[1];
-        this.previousSpan = IPoint.distance(p1, p2);
+        this.previousSpan = p1.distance(p2);
         this.previousFocus = Point.midpoint(p1, p2);
     }
 
     onDrag(event: _SurfaceTouchEvent) {
         let p1 = event.pointers[0];
         let p2 = event.pointers[1];
-        let span = IPoint.distance(p1, p2);
+        let span = p1.distance(p2);
         let focus = Point.midpoint(p1, p2);
         let surface = event.target;
         let camera = surface.renderer.camera;

@@ -1,5 +1,5 @@
-﻿import {Template} from'gulp-structify/template'
-import {IPoint} from './point'
+﻿import { PointLike } from './point';
+import { Template } from 'gulp-structify/template';
 
 /**
  * The line from (x1,y1) to (x2,y2).
@@ -26,7 +26,7 @@ export class Line extends Template<Float32Array> {
     /**
      * Sets this line to the line from one point to another.
      */
-    setFromPointToPoint(p1: IPoint, p2: IPoint) {
+    setFromPointToPoint(p1: PointLike, p2: PointLike) {
         this.x1 = p1.x;
         this.y1 = p1.y;
         this.x2 = p2.x;
@@ -36,7 +36,7 @@ export class Line extends Template<Float32Array> {
     /**
      * Checks if the distance from this line to the specified point is less than epsilon.
      */
-    contains(pt: IPoint, epsilon: number) {
+    contains(pt: PointLike, epsilon: number) {
         return this.contains$(pt.x, pt.y, epsilon);
     }
 

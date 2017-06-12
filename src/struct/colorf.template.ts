@@ -1,6 +1,6 @@
-﻿import {Template} from'gulp-structify/template'
-import {IColor} from './color';
+﻿import { ColorLike } from './color';
 import { ArgbRegex, pad } from './util';
+import { Template } from 'gulp-structify/template';
 
 /**
  * A 32-bit (r,g,b,a) color.
@@ -24,17 +24,17 @@ class ColorF extends Template<Float32Array>{
     a: number;
 
     /**
-     * Checks if the specified Color is fully opaque. 
+     * Checks if this ColorF is fully opaque. 
      */
-    isOpaque(c: ColorF) {
-        return c.a === 1;
+    isOpaque() {
+        return this.a === 1;
     }
 
     /**
-     * Checks if the specified Color is fully transparent.
+     * Checks if this Color is fully transparent.
      */
-    isTransparent(c: ColorF) {
-        return c.a === 0;
+    isTransparent() {
+        return this.a === 0;
     }
 
     /**
@@ -49,7 +49,7 @@ class ColorF extends Template<Float32Array>{
     /**
      * Extracts the (r,g,b,a) components of the specified Color into this ColorF.
      */
-    setFromColor(src: IColor){
+    setFromColor(src: ColorLike){
         this.r = src.r / 0xff;
         this.g = src.g / 0xff;
         this.b = src.b / 0xff;

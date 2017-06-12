@@ -1,7 +1,7 @@
 ﻿import { IndexTupleBuffer } from '../struct/indextuple';
 import { Mat2d } from '../struct/mat2d';
-import { IPoint } from '../struct/point';
-import { Rect } from '../struct/rect';
+import { PointLike } from '../struct/point';
+import { Rect, RectLike } from '../struct/rect';
 import { Vec2Struct } from '../struct/vec2';
 import { VertexBuffer } from '../struct/vertex';
 
@@ -112,11 +112,11 @@ export class Mesh {
         // Begin with the vertex (1,0), rotating for flat top polygon if requested
         let vertex = Vec2Struct.create$(0, 1);
         if(isFlatTopped){ Mat2d.rotate(angle/2).map(vertex, vertex); }
-        mesh.put(vertex);
+        mesh.rset(vertex);
         //Perform the rotation and add the result to the array until it is full
         while (mesh.hasValidPosition()) {
             rotation.map(vertex, vertex);
-            mesh.put(vertex);
+            mesh.rset(vertex);
         }
         return mesh;
     }
@@ -132,7 +132,7 @@ export class Mesh {
         // Compute indices and add to array until it is full
         let second = 1, third = 2;
         while (indices.hasValidPosition()) {
-            indices.put$(0, second, third);
+            indices.rset$(0, second, third);
             second = third++
         }
         // Return the indices
@@ -156,7 +156,7 @@ export class Mesh {
       * Extracts the vertices from the specified rect into a new vertex buffer.
       * @param rect the rect from which to extract the vertices.
       */
-     static rectVertices(rect: Rect) {
+     static rectVertices(rect: RectLike) {
          return new VertexBuffer(
              new Float32Array([
                  rect.left, rect.top,
@@ -202,8 +202,8 @@ export class Mesh {
         rotation.setRotate(0.5 * angle);
         rotation.map(innerVertex, innerVertex);
         // Add the first outer and inner vertices to the mesh
-        mesh.put(outerVertex);
-        mesh.put(innerVertex);
+        mesh.rset(outerVertex);
+        mesh.rset(innerVertex);
         //Set the matrix to rotate by the full angle
         rotation.setRotate(angle);
         //Keep rotating the inner and outer vertices and
@@ -211,8 +211,8 @@ export class Mesh {
         while (mesh.hasValidPosition()) {
             rotation.map(outerVertex, outerVertex);
             rotation.map(innerVertex, innerVertex)
-            mesh.put(outerVertex);
-            mesh.put(innerVertex);
+            mesh.rset(outerVertex);
+            mesh.rset(innerVertex);
         }
         // Return the path
         return mesh;
@@ -232,13 +232,13 @@ export class Mesh {
         // Compute inner indices and add to array
         let first = 1, second = 3, third = 5;
         while (innerIndexCount--) {
-            indices.put$(first, second, third);
+            indices.rset$(first, second, third);
             second = third++; third++;
         }
         // Computer outer indices and add to array
         first = 2 * n - 1; second = 0; third = 1;
         while (outerIndexCount--) {
-            indices.put$(first, second, third);
+            indices.rset$(first, second, third);
             first = third++; second = third++
         }
         // Return the indices
@@ -249,7 +249,7 @@ export class Mesh {
      * Checks if this mesh contains the specified point
      * @param point the point to check.
      */
-    contains(point: IPoint){
+    contains(point: PointLike){
         return this.bounds.contains(point) && this.vertices.contains(point);
     }
 

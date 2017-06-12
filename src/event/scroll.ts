@@ -1,5 +1,5 @@
 import { _Surface } from '../rendering/surface';
-import { IPoint } from '../struct/point';
+import { Point } from '../struct/point';
 import { SurfaceEvent } from './surface';
 
 export interface SurfaceWheelEvent<S extends _Surface> extends SurfaceEvent<S, WheelEvent | MouseWheelEvent> {
@@ -12,7 +12,7 @@ export interface SurfaceWheelEvent<S extends _Surface> extends SurfaceEvent<S, W
     /**
      * The position of the cursor in world space.
      */
-    cursor: IPoint;
+    cursor: Point;
 }
 
 export type _SurfaceWheelEvent = SurfaceWheelEvent<_Surface>;

@@ -1,6 +1,6 @@
-import {Template} from 'gulp-structify/template'
-import {IRect} from './rect'
-import {IPoint} from './point'
+import { PointLike } from './point';
+import { Rect } from './rect';
+import { Template } from 'gulp-structify/template';
 
  /**
   * Ellipse with semi axes (rx,ry) centered at the point (cx,cy).
@@ -26,18 +26,18 @@ export class Ellipse extends Template<Float32Array> {
     /**
      * Sets this ellipse to an ellipse bounded by the specified rect.
      */
-    setFromRect(bounds: IRect) {
-        this.rx = IRect.width(bounds) / 2;
-        this.ry = IRect.height(bounds) / 2;
-        this.cx = IRect.centerX(bounds);
-        this.cy = IRect.centerY(bounds);
+    setFromRect(bounds: Rect) {
+        this.rx = bounds.width() / 2;
+        this.ry = bounds.height() / 2;
+        this.cx = bounds.centerX();
+        this.cy = bounds.centerY();
     }
 
     /**
      * Checks if this ellipse contains the specified point.
      * @param pt the point to check.
      */
-    contains(pt: IPoint) {
+    contains(pt: PointLike) {
         return this.contains$(pt.x, pt.y);
     }
 

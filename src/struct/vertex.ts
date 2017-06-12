@@ -1,7 +1,7 @@
-﻿import { IVec2, Vec2Buffer, Vec2 } from '../struct/vec2'
-import { IPoint } from '../struct/point'
-import {IMat2d} from '../struct/mat2d'
-import {Rect} from '../struct/rect'
+﻿import { Mat2d } from '../struct/mat2d';
+import { PointLike } from '../struct/point';
+import { Rect } from '../struct/rect';
+import { Vec2Buffer, Vec2Like } from '../struct/vec2';
 
  /**
   * Helper class for working with vertex data stored in a Float32Array.
@@ -13,30 +13,6 @@ export class VertexBuffer extends Vec2Buffer {
      */
     static create(capacity: number) {
         return new VertexBuffer(new Float32Array(capacity * 2));
-    }
-
-    /**
-     * Gets the coordinates of the vertex at the specified position without changing the position of this buffer.
-     * @param position the position of the vertex in this buffer.
-     * @param dst where to write the coordinates. Defaults to new Vec2.
-     * @returns dst.
-     */
-    get(position: number, dst: IVec2 = new Vec2()){
-        let dataPosition = position * this.structLength();
-        dst.x = this.data[dataPosition];
-        dst.y = this.data[dataPosition+1];
-        return dst;
-    }
-
-    /**
-     * Gets the coordinates of the next vertex in this buffer, increasing its position by one.
-     * @param dst where to write the coordinates. Defaults to new Vec2.
-     * @returns dst.
-     */
-    next(dst: IVec2 = new Vec2()){
-        dst.x = this.data[this.dataPosition++];
-        dst.y = this.data[this.dataPosition++];
-        return dst;
     }
 
     /**
@@ -54,7 +30,7 @@ export class VertexBuffer extends Vec2Buffer {
      * @param offset the offset of the first vertex in the subset.
      * @param count the number of vertices in the subset.
      */
-    contains(pt: IPoint, offset = 0, count = this.capacity() - offset) {
+    contains(pt: PointLike, offset = 0, count = this.capacity() - offset) {
         return this.contains$(pt.x, pt.y, offset, count);
     }
 
@@ -83,7 +59,7 @@ export class VertexBuffer extends Vec2Buffer {
      * @param offset the offset of the first vertex.
      * @param count the number of vertices to include.
      */
-    offset(vec: IVec2, offset = 0, count = this.capacity() - offset) {
+    offset(vec: Vec2Like, offset = 0, count = this.capacity() - offset) {
         this.offset$(vec.x, vec.y, offset, count);
     }
 
@@ -108,8 +84,8 @@ export class VertexBuffer extends Vec2Buffer {
      * @param offset the offset of the first vertex.
      * @param count the number of vertices to include.
      */
-    transform(matrix: IMat2d, offset = 0, count = this.capacity() - offset) {
-        IMat2d.mapPoints$(matrix, this.data, offset * this.structLength());
+    transform(matrix: Mat2d, offset = 0, count = this.capacity() - offset) {
+        matrix.mapPoints$(this.data, offset * this.structLength());
     }
 
     /**

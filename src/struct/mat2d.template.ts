@@ -1,7 +1,8 @@
-﻿import {Template} from'gulp-structify/template'
-import {IPoint} from './point'
-import {IVec2, Vec2} from './vec2'
-import {IRect } from './rect'
+﻿import { Point, PointLike } from './point';
+import { Rect } from './rect';
+import { Vec2, Vec2Like } from './vec2';
+import { Template } from 'gulp-structify/template';
+import { like } from "gulp-structify/like";
 
 /**
  * Scale to fit options for a rect-to-rect matrix transformation.
@@ -75,7 +76,7 @@ class Mat2d extends Template<Float32Array>{
      * @param right the right hand matrix.
      * @param dst where to store the result.
      */
-    setConcat(left: Mat2d, right: Mat2d){
+    setConcat(@like left: Mat2d,@like right: Mat2d){
         // Calculate the first row, fixing the first left hand row
         // and moving across each of the right hand columns
         let c1r1 = left.c1r1 * right.c1r1 + left.c2r1 * right.c1r2;
@@ -105,48 +106,42 @@ class Mat2d extends Template<Float32Array>{
      * @param dst the destination rectangle.
      * @param stf the scale to fit option.
      */
-    setRectToRect(src: IRect, dst: IRect, stf: ScaleToFit) {
+    setRectToRect(src: Rect, dst: Rect, stf: ScaleToFit) {
 
         //Determine which points to match based on the scale to fit option.
-        let srcPoint: IPoint,
-            dstPoint: IPoint;
+        let srcPoint: Point,
+            dstPoint: Point;
 
         switch (stf) {
             case ScaleToFit.Center:
                 //Match center point
-                srcPoint = IRect.center(src);
-                dstPoint = IRect.center(dst);
+                srcPoint = src.center();
+                dstPoint = dst.center();
                 break;
             case ScaleToFit.End:
                 //Match bottom right corner
-                srcPoint = IRect.bottomRight(src);
-                dstPoint = IRect.bottomRight(dst);
+                srcPoint = src.bottomRight();
+                dstPoint = dst.bottomRight();
                 break;
             default: //(Start and Fill)
                 //Match top left corner
-                srcPoint = IRect.topLeft(src);
-                dstPoint = IRect.topLeft(dst);
+                srcPoint = src.topLeft();
+                dstPoint = dst.topLeft();
                 break;
         }
 
         //Determine the width and height ratio between the two rectangles.
-        let sx = IRect.width(dst) / IRect.width(src);
-        let sy = IRect.height(dst) / IRect.height(src);
+        let sx = dst.width() / src.width();
+        let sy = dst.height() / src.height();
 
         //Set the matrix to translate the src point to the origin
         this.setTranslate$(-srcPoint.x, -srcPoint.y);
 
-        //Next, set the matrix to scale the src rect so it is big (or small) enough
-        //to fit inside the dst rect with at least one side matching in width or height.
-        //If we're not maintaining aspect ratio
+        // Next, set the matrix to scale the src rect so it is big (or small) enough
+        // to fit inside the dst rect with at least one side matching in width or height.
         if (stf === ScaleToFit.Fill) {
-            //We can scale with different width and height ratios, allowing for
-            //a perfect map from the source rectangle to the destination rectangle
-            //using the ratios calculated above.
             this.postScale(sx, sy);
         } else {
-            //Otherwise we scale by the min of the width and height ratios,
-            //ensuring that the src rect fits entirely enside the dst rect.
             this.postStretch(Math.min(sx, sy));
         }
 
@@ -160,7 +155,7 @@ class Mat2d extends Template<Float32Array>{
      * @param radians the angle of the rotation in radians.
      * @param p the pivot point.
      */
-    setRotate(radians: number, p?: IPoint) {
+    setRotate(radians: number, p?: PointLike) {
         //Get the sin and cos of the angle
         let sin = Math.sin(radians);
         let cos = Math.cos(radians);
@@ -175,13 +170,11 @@ class Mat2d extends Template<Float32Array>{
      * @param end the end point (after rotation).
      * @param p the pivot point. Defaults to (0,0).
      */
-    setRotateToPoint(start: IPoint, end: IPoint, p?: IPoint) {
+    setRotateToPoint(start: PointLike, end: PointLike, p?: PointLike) {
         //Calculate the norm of the vectors
         //from pivot point to start and pivot point to end
-        let n1 = new Vec2();
-        let n2 = new Vec2(); 
-        n1.set(start);
-        n2.set(end);
+        let n1 = Vec2.create(start);
+        let n2 = Vec2.create(end);
         if (p) {
             n1.subtract(p);
             n2.subtract(p);
@@ -202,7 +195,7 @@ class Mat2d extends Template<Float32Array>{
      * @param cos the cosine of the rotation angle.
      * @param p the pivot point.
      */
-    setSinCos(sin: number, cos: number, p?: IPoint){
+    setSinCos(sin: number, cos: number, p?: PointLike){
         //Set the matrix to rotate about the origin (0,0)
         this.c1r1 = cos; this.c2r1 = -sin; this.c3r1 = 0;
         this.c1r2 = sin; this.c2r2 = cos; this.c3r2 = 0;
@@ -216,7 +209,7 @@ class Mat2d extends Template<Float32Array>{
      * @param sy the percentage by which to scale in the vertical direction.
      * @param p the pivot point.
      */
-    setScale(sx: number, sy: number, p?: IPoint){
+    setScale(sx: number, sy: number, p?: PointLike){
         //Set the matrix to scale about the origin (0,0)
         this.c1r1 = sx; this.c2r1 = 0; this.c3r1 = 0;
         this.c1r2 = 0; this.c2r2 = sy; this.c3r2 = 0;
@@ -230,7 +223,7 @@ class Mat2d extends Template<Float32Array>{
      * @param end the end point (after scale).
      * @param p the pivot point. Defaults to (0,0).
      */
-    setScaleToPoint(start: IPoint, end: IPoint, p?: IPoint) {
+    setScaleToPoint(start: PointLike, end: PointLike, p?: PointLike) {
         let sx = p ? (end.x - p.x) / (start.x - p.x) : end.x / start.x;
         let sy = p ? (end.y - p.y) / (start.y - p.y) : end.y / start.y;
         this.setScale(sx, sy, p);
@@ -242,7 +235,7 @@ class Mat2d extends Template<Float32Array>{
      * @param ratio the percentage by which to stretch in all directions.
      * @param p the pivot point.
      */
-    setStretch(ratio: number, p?: IPoint) {
+    setStretch(ratio: number, p?: PointLike) {
         //Set the matrix to scale vertically and horizontally
         //by the same ratio about the origin
         return this.setScale(ratio, ratio, p);
@@ -255,9 +248,9 @@ class Mat2d extends Template<Float32Array>{
      * @param end: the end point (after stretch).
      * @param p the pivot point. Defaults to (0,0).
      */
-    setStretchToPoint(start: IPoint, end: IPoint, p?: IPoint) {
-        let startLength = IPoint.distance(start, p);
-        let endLength = IPoint.distance(end, p);
+    setStretchToPoint(start: Point, end: Point, p?: Point) {
+        let startLength = start.distance(p);
+        let endLength = end.distance(p);
         let ratio = endLength / startLength;
         return this.setStretch(ratio, p);
     }
@@ -269,12 +262,10 @@ class Mat2d extends Template<Float32Array>{
      * @param end the end point (after stretch rotation).
      * @param p the pivot point. Defaults to (0,0).
      */
-    setStretchRotateToPoint(start: IPoint, end: IPoint, p?: IPoint) {
+    setStretchRotateToPoint(start: PointLike, end: PointLike, p?: PointLike) {
         // Calculate the vector from pivot point to start and pivot point to end
-        let startVector = new Vec2();
-        let endVector = new Vec2();
-        startVector.set(start);
-        endVector.set(end);
+        let startVector = Vec2.create(start);
+        let endVector = Vec2.create(end);
         if (p) {
             startVector.subtract(p);
             endVector.subtract(p);
@@ -302,7 +293,7 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Sets this Mat2d to translate by the specified vector.
      */
-    setTranslate(vec: Vec2) {
+    setTranslate(vec: Vec2Like) {
         this.setTranslate$(vec.x, vec.y);
     }
 
@@ -319,14 +310,14 @@ class Mat2d extends Template<Float32Array>{
       * @param start the start point (before translation).
       * @param end the end point (after translation).
       */
-    setTranslateToPoint(start: IPoint, end: IPoint) {
+    setTranslateToPoint(start: PointLike, end: PointLike) {
         this.setTranslate$(end.x - start.x, end.y - start.y);
     }
 
     /**
      * Conjugates this Mat2d with a translation by the specified vector.
      */
-    conjugateByTranslation(vec: Vec2) {
+    conjugateByTranslation(vec: Vec2Like) {
         this.conjugateByTranslation$(vec.x, vec.y)
     }
 
@@ -343,7 +334,7 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Sets this Mat2d to the inverse of the other Mat2d.
      */
-    setInverse(other: Mat2d){
+    setInverse(@like other: Mat2d){
         // Copy each of the entries of the other Mat2d
         let { c1r1, c2r1, c3r1, c1r2, c2r2, c3r2 } = other;
 
@@ -362,14 +353,14 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Post concats this Mat2d by the other Mat2d: this = other * this.
      */
-    postConcat(other: Mat2d) {
+    postConcat(@like other: Mat2d) {
         this.setConcat(other, this);
     }
 
     /**
      * Pre concats this Mat2d by the other Mat2d: this = this * other.
      */
-    preConcat(other: Mat2d) {
+    preConcat(@like other: Mat2d) {
         this.setConcat(this, other);
     }
 
@@ -458,7 +449,7 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Post concats this Mat2d with a translation by the specified vector.
      */
-    postTranslate(vec: IVec2) {
+    postTranslate(vec: Vec2Like) {
         this.postTranslate$(vec.x, vec.y);
     }
 
@@ -474,7 +465,7 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Post concats this Mat2d with a translation by vector (dx,dy).
      */
-    preTranslate(vec: Vec2) {
+    preTranslate(vec: Vec2Like) {
         this.preTranslate$(vec.x, vec.y);
     }
 
@@ -489,9 +480,10 @@ class Mat2d extends Template<Float32Array>{
 
     /**
      * Maps the source point and writes the result into dst.
-     * @param point the point to map.
+     * @param src the point to map.
+     * @param dst where to write the result.
      */
-    map(src: IPoint, dst: IPoint) {
+    map(src: PointLike, dst: PointLike) {
         this.map$(src.x, src.y, dst);
     }
 
@@ -499,8 +491,9 @@ class Mat2d extends Template<Float32Array>{
      * Maps the point (x,y) and writes the result into dst.
      * @param x the x coordinate of the point.
      * @param y the y coordinate of the point.
+     * @param dst where to write the result. 
      */
-    map$(x: number, y: number, dst: IPoint) {
+    map$(x: number, y: number, dst: PointLike) {
         dst.x = this.c1r1 * x + this.c2r1 * y + this.c3r1;
         dst.y = this.c1r2 * x + this.c2r2 * y + this.c3r2;
     }
@@ -511,7 +504,7 @@ class Mat2d extends Template<Float32Array>{
      * @param srcOffset offset into src of the first point in the subset.
      * @param count the number of points to include.
      */
-    mapPoints(src: IPoint[], srcOffset = 0, count = src.length - srcOffset) {
+    mapPoints(src: PointLike[], srcOffset = 0, count = src.length - srcOffset) {
         let {c1r1, c2r1, c3r1, c1r2, c2r2, c3r2 } = this;
         while (count-- > 0) {
             // Get the (x,y) coordinates of the next point
@@ -544,15 +537,15 @@ class Mat2d extends Template<Float32Array>{
     /**
      * Maps the src rect and writes the result into dst.
      * @param src the source rectangle.
-     * @param dst the destination rectangle. Defaults to src.
+     * @param dst the destination rectangle.
      */
-    mapRect(src: IRect, dst: IRect) {
+    mapRect(src: Rect, dst: Rect) {
         // Get the four corners of the src IRect
-        let corners = IRect.corners(src);
+        let corners = src.corners();;
         // Map the four corners
         this.mapPoints(corners);
         // Enclose the mapped corners
-        IRect.setUnionOfPoints(dst, corners)
+        dst.setUnionOfPoints(corners);
     }
 }
 
