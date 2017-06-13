@@ -1,3 +1,4 @@
+import { RectLike } from '../struct/rect';
 import { IndexTupleBuffer } from '../struct/indexTuple';
 import { VertexBuffer } from '../struct/vertex';
 
@@ -6,4 +7,5 @@ export interface MeshSpecification {
     type?: string;
     vertices?: number[] | Float32Array | VertexBuffer; 
     indices?: number[] | Uint16Array | IndexTupleBuffer;
+    bounds?: RectLike;
 }

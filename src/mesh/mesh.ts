@@ -1,4 +1,5 @@
-﻿import { PolygonSpecification } from './polygon';
+﻿import { RectangleSpecification } from './rectangle';
+import { PolygonSpecification } from './polygon';
 import { MeshSpecification } from './specification';
 import { IndexTupleBuffer } from '../struct/indextuple';
 import { Mat2d } from '../struct/mat2d';
@@ -88,7 +89,7 @@ export class Mesh {
                     vertices = Mesh.polygonVertices(sides, hasFlatTop);
                 }
                 if(!spec.indices){
-                    indices = Mesh.polygonIndices(sides);
+                    indices = Mesh.polygonIndices(sides || vertices.capacity());
                 }
                 break;
             case "star":
@@ -98,6 +99,15 @@ export class Mesh {
                 }
                 if(!spec.indices){
                     indices = Mesh.starIndices(points);
+                }
+                break;
+            case "rectangle":
+                let { bounds } = spec as RectangleSpecification;
+                if(!spec.vertices){
+                    vertices = Mesh.rectVertices(bounds);
+                }
+                if(!spec.indices){
+                    indices = Mesh.polygonIndices(4);
                 }
                 break;
             default: 
