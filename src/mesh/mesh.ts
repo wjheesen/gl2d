@@ -1,9 +1,12 @@
-﻿import { IndexTupleBuffer } from '../struct/indextuple';
+﻿import { PolygonSpecification } from './polygon';
+import { MeshSpecification } from './specification';
+import { IndexTupleBuffer } from '../struct/indextuple';
 import { Mat2d } from '../struct/mat2d';
 import { PointLike } from '../struct/point';
 import { Rect, RectLike } from '../struct/rect';
 import { Vec2Struct } from '../struct/vec2';
 import { VertexBuffer } from '../struct/vertex';
+import { StarSpecification } from "./star";
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
@@ -58,29 +61,52 @@ export class Mesh {
      * Creates a mesh with the specified source data.
      * @param source obejct containing the data for the mesh.
      */
-    static fromSource(source: MeshSource){
+    static fromSpecification(spec: MeshSpecification){
         let vertices: VertexBuffer;
         let indices: IndexTupleBuffer;
 
-        if(source.vertices instanceof VertexBuffer){
-            vertices = source.vertices;
-        } else if(source.vertices instanceof Float32Array){
-            vertices = new VertexBuffer(source.vertices);
-        } else {
-            vertices = new VertexBuffer(new Float32Array(source.vertices));
+        if(spec.vertices instanceof VertexBuffer){
+            vertices = spec.vertices;
+        } else if(spec.vertices instanceof Float32Array){
+            vertices = new VertexBuffer(spec.vertices);
+        } else if(spec.vertices) {
+            vertices = new VertexBuffer(new Float32Array(spec.vertices));
         }
         
-        if(source.indices){
-            if(source.indices instanceof IndexTupleBuffer){
-                indices = source.indices;
-            } else if(source.indices instanceof Uint16Array){
-                indices = new IndexTupleBuffer(source.indices);
-            } else {
-                indices = new IndexTupleBuffer(new Uint16Array(source.indices));
-            }
+        if(spec.indices instanceof IndexTupleBuffer){
+            indices = spec.indices;
+        } else if(spec.indices instanceof Uint16Array){
+            indices = new IndexTupleBuffer(spec.indices);
+        } else if(spec.indices){
+            indices = new IndexTupleBuffer(new Uint16Array(spec.indices));
         }
 
-        return new Mesh(vertices, indices, source.id)
+        switch(spec.type){
+            case "polygon":
+                let { sides, hasFlatTop } = spec as PolygonSpecification;
+                if(!spec.vertices){
+                    vertices = Mesh.polygonVertices(sides, hasFlatTop);
+                }
+                if(!spec.indices){
+                    indices = Mesh.polygonIndices(sides);
+                }
+                break;
+            case "star":
+                let { points, ratio } = spec as StarSpecification;
+                if(!spec.vertices){
+                    vertices = Mesh.starVertices(points, ratio);
+                }
+                if(!spec.indices){
+                    indices = Mesh.starIndices(points);
+                }
+                break;
+            default: 
+                if(!spec.vertices){
+                    throw new Error(`Insufficient vertex data in specification ${spec}`);
+                }
+        }
+
+        return new Mesh(vertices, indices, spec.id)
     }
 
     /**
@@ -187,8 +213,8 @@ export class Mesh {
      * @param ratio ratio of the inner radius to the outer radius.
      */
     static starVertices(points: number, ratio: number) {
-        // Create mesh big enough to hold the n inner vertices and n outer vertices
-        let mesh = VertexBuffer.create(points + points);
+        // Create vertex buffer big enough to hold the n inner vertices and n outer vertices
+        let vertices = VertexBuffer.create(points + points);
         // Calculate the rotation angle
         let angle = 2 * Math.PI / points;
         // Create a rotation matrix
@@ -201,21 +227,21 @@ export class Mesh {
         let innerVertex = Vec2Struct.create$(0, ratio);
         rotation.setRotate(0.5 * angle);
         rotation.map(innerVertex, innerVertex);
-        // Add the first outer and inner vertices to the mesh
-        mesh.rset(outerVertex);
-        mesh.rset(innerVertex);
-        //Set the matrix to rotate by the full angle
+        // Add the first outer and inner vertices to the buffer
+        vertices.rset(outerVertex);
+        vertices.rset(innerVertex);
+        // Set the matrix to rotate by the full angle
         rotation.setRotate(angle);
-        //Keep rotating the inner and outer vertices and
-        //adding them to the array until it is full.
-        while (mesh.hasValidPosition()) {
+        // Keep rotating the inner and outer vertices and
+        // adding them to the array until it is full.
+        while (vertices.hasValidPosition()) {
             rotation.map(outerVertex, outerVertex);
             rotation.map(innerVertex, innerVertex)
-            mesh.rset(outerVertex);
-            mesh.rset(innerVertex);
+            vertices.rset(outerVertex);
+            vertices.rset(innerVertex);
         }
         // Return the path
-        return mesh;
+        return vertices;
     }
 
 
@@ -253,10 +279,4 @@ export class Mesh {
         return this.bounds.contains(point) && this.vertices.contains(point);
     }
 
-}
-
-export class MeshSource {
-    vertices: number[] | Float32Array | VertexBuffer; 
-    indices?: number[] | Uint16Array | IndexTupleBuffer;
-    id?: string;
 }
