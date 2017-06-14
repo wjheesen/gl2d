@@ -1,11 +1,11 @@
 import { Shape } from '../drawable/shape';
 import { Point } from '../struct/point';
 import { Mat2d } from '../struct/mat2d';
+import { Mesh } from './mesh';
 import { PolygonMesh } from './polygon';
 import { Rect } from '../struct/rect';
 import { IndexTupleBuffer } from '../struct/indexTuple';
 import { VertexBuffer } from '../struct/vertex';
-import { Mesh } from './mesh';
 
 export class InstancedPolygonMesh extends Mesh {
 

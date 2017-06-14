@@ -7,9 +7,9 @@ import { IndexTupleBuffer } from '../struct/indextuple';
 import { PointLike } from '../struct/point';
 import { Rect } from '../struct/rect';
 import { VertexBuffer } from '../struct/vertex';
+import { PolygonMesh } from './polygon';
 import { InstancedPolygonMesh } from './instancedPolygon';
 import { MultiPolygonMesh } from './multiPolygon';
-import { PolygonMesh } from './polygon';
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
@@ -122,17 +122,18 @@ export abstract class Mesh {
 
         if(spec.polygonIndices){
             return new MultiPolygonMesh(vertices, spec.polygonIndices, indices, id);
+        } 
+
+        let mesh = new PolygonMesh(vertices, indices, id);
+
+        if(spec.effect === "spray"){
+            let { innerRing, rings } = spec as SpraySpecification;
+            return InstancedPolygonMesh.spray(mesh, innerRing, rings, id);
         } else {
-            let mesh = new PolygonMesh(vertices, indices, id);
-            if(spec.effect === "spray"){
-                let { innerRing, rings } = spec as SpraySpecification;
-                return InstancedPolygonMesh.spray(mesh, innerRing, rings, id);
-            } else {
-                return mesh;
-            }
+            return mesh;
         }
     }
-
+    
    /**
      * Checks if this mesh contains the specified point
      * @param pt the point to check.
