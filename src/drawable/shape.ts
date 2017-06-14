@@ -4,7 +4,7 @@ import { Rect } from '../struct/rect';
 import { Vec2 } from '../struct/vec2';
 import { VertexBuffer } from '../struct/vertex';
 import { Graphic } from './graphic';
-import { Mesh } from '../mesh/mesh';
+import { Mesh } from './mesh';
 
 /**
  * Shape defined by matrix transformation of a mesh.
