@@ -1,18 +1,20 @@
-﻿import { RectangleSpecification } from './rectangle';
-import { PolygonSpecification } from './polygon';
-import { MeshSpecification } from './specification';
+﻿import { MeshSpecification } from '../specification/mesh';
+import { PolygonSpecification } from '../specification/polygon';
+import { RectangleSpecification } from '../specification/rectangle';
+import { SpraySpecification } from '../specification/spray';
+import { StarSpecification } from '../specification/star';
 import { IndexTupleBuffer } from '../struct/indextuple';
-import { Mat2d } from '../struct/mat2d';
 import { PointLike } from '../struct/point';
-import { Rect, RectLike } from '../struct/rect';
-import { Vec2Struct } from '../struct/vec2';
+import { Rect } from '../struct/rect';
 import { VertexBuffer } from '../struct/vertex';
-import { StarSpecification } from "./star";
+import { InstancedPolygonMesh } from './instancedPolygon';
+import { MultiPolygonMesh } from './multiPolygon';
+import { PolygonMesh } from './polygon';
 
 /**
  * Stores static vertex and index data that multiple graphics can share.
  */
-export class Mesh {
+export abstract class Mesh {
 
     /**
      * Optional string identifier for this mesh.
@@ -25,9 +27,9 @@ export class Mesh {
     public vertices: VertexBuffer;
 
     /**
-     * The vertex indices that divide the mesh into renderable triangles. Null if no indices are needed.
+     * The indices for each triangle in this mesh.
      */
-    public indices: IndexTupleBuffer;
+    public triangleIndices?: IndexTupleBuffer;
 
     /**
      * The smallest rect containing each mesh vertex.
@@ -45,15 +47,16 @@ export class Mesh {
     public elementBufferOffset = 0;
 
     /**
-     * Creates a mesh with the specified vertices and indices.
+     * Creates a mesh with the specified data.
      * @param vertices the mesh vertices.
-     * @param indices the indices that divide the mesh into renderable triangles.
+     * @param triangleIndices the indices for each triangle in the mesh.
+     * @param polygonIndices the indices for each polygon in the mesh.
+     * @param id an optional id for the mesh.
      * @param bounds the boundaries of the mesh.
-     * @param id an optional id for this mesh.
      */
-    constructor(vertices: VertexBuffer, indices?: IndexTupleBuffer, id?: string, bounds = vertices.measureBoundaries()) {
+    constructor(vertices: VertexBuffer, triangleIndices?: IndexTupleBuffer, id?: string, bounds = vertices.measureBoundaries()) {
         this.vertices = vertices;
-        this.indices = indices;
+        this.triangleIndices = triangleIndices;
         this.bounds = bounds;
         this.id = id;
     }
@@ -65,6 +68,7 @@ export class Mesh {
     static fromSpecification(spec: MeshSpecification){
         let vertices: VertexBuffer;
         let indices: IndexTupleBuffer;
+        let id = spec.id;
 
         if(spec.vertices instanceof VertexBuffer){
             vertices = spec.vertices;
@@ -74,219 +78,75 @@ export class Mesh {
             vertices = new VertexBuffer(new Float32Array(spec.vertices));
         }
         
-        if(spec.indices instanceof IndexTupleBuffer){
-            indices = spec.indices;
-        } else if(spec.indices instanceof Uint16Array){
-            indices = new IndexTupleBuffer(spec.indices);
-        } else if(spec.indices){
-            indices = new IndexTupleBuffer(new Uint16Array(spec.indices));
+        if(spec.triangleIndices instanceof IndexTupleBuffer){
+            indices = spec.triangleIndices;
+        } else if(spec.triangleIndices instanceof Uint16Array){
+            indices = new IndexTupleBuffer(spec.triangleIndices);
+        } else if(spec.triangleIndices){
+            indices = new IndexTupleBuffer(new Uint16Array(spec.triangleIndices));
         }
 
         switch(spec.type){
             case "polygon":
                 let { sides, hasFlatTop } = spec as PolygonSpecification;
                 if(!spec.vertices){
-                    vertices = Mesh.polygonVertices(sides, hasFlatTop);
+                    vertices = PolygonMesh.regularVertices(sides, hasFlatTop);
                 }
-                if(!spec.indices){
-                    indices = Mesh.polygonIndices(sides || vertices.capacity());
+                if(!spec.triangleIndices){
+                    indices = PolygonMesh.regularIndices(sides || vertices.capacity());
                 }
                 break;
             case "star":
                 let { points, ratio } = spec as StarSpecification;
                 if(!spec.vertices){
-                    vertices = Mesh.starVertices(points, ratio);
+                    vertices = PolygonMesh.starVertices(points, ratio);
                 }
-                if(!spec.indices){
-                    indices = Mesh.starIndices(points);
+                if(!spec.triangleIndices){
+                    indices = PolygonMesh.starIndices(points);
                 }
                 break;
             case "rectangle":
                 let { bounds } = spec as RectangleSpecification;
                 if(!spec.vertices){
-                    vertices = Mesh.rectVertices(bounds);
+                    vertices = PolygonMesh.rectangleVertices(bounds);
                 }
-                if(!spec.indices){
-                    indices = Mesh.polygonIndices(4);
+                if(!spec.triangleIndices){
+                    indices = PolygonMesh.regularIndices(4);
                 }
                 break;
             default: 
                 if(!spec.vertices){
                     throw new Error(`Insufficient vertex data in specification ${spec}`);
-                }
+                } 
         }
 
-        return new Mesh(vertices, indices, spec.id)
-    }
-
-    /**
-     * Creates the mesh for a regular polygon with n sides.
-     * @param n how many sides the polygon should have.
-     * @param isFlatTopped whether the polygon is flat-topped (true) or pointy-topped (false). Defaults to false.
-     * @param id an optional id for the mesh.
-     */
-    static polygon(n: number, isFlatTopped = false, id?: string) {
-        // Generate the vertices
-        let vertices = Mesh.polygonVertices(n, isFlatTopped);
-        // Generate the indices
-        let indices = Mesh.polygonIndices(n);
-        //Construct the mesh and return
-        return new Mesh(vertices, indices, id);
-    }
-
-    /**
-     * Generates the vertices for a regular polygon centered at (0,0).
-     * @param n how many sides the polygon should have.
-     * @param isFlatTopped whether the polygon is flat-topped (true) or pointy-topped (false). Defaults to false.
-     */
-    static polygonVertices(n: number, isFlatTopped = false) {
-        // Create a mesh big enough to hold the n vertices
-        let mesh = VertexBuffer.create(n);
-        // Create a matrix to rotate from vertex to vertex
-        let angle = 2 * Math.PI / n;
-        let rotation = Mat2d.rotate(angle)
-        // Begin with the vertex (1,0), rotating for flat top polygon if requested
-        let vertex = Vec2Struct.create$(0, 1);
-        if(isFlatTopped){ Mat2d.rotate(angle/2).map(vertex, vertex); }
-        mesh.rset(vertex);
-        //Perform the rotation and add the result to the array until it is full
-        while (mesh.hasValidPosition()) {
-            rotation.map(vertex, vertex);
-            mesh.rset(vertex);
+        if(spec.polygonIndices){
+            return new MultiPolygonMesh(vertices, spec.polygonIndices, indices, id);
+        } else {
+            let mesh = new PolygonMesh(vertices, indices, id);
+            if(spec.effect === "spray"){
+                let { innerRing, rings } = spec as SpraySpecification;
+                return InstancedPolygonMesh.spray(mesh, innerRing, rings, id);
+            } else {
+                return mesh;
+            }
         }
-        return mesh;
-    }
-
-    /**
-     * Generates the indices for a regular mesh with n sides.
-     * The mesh will have 3*(n-2) indices.
-     * @param n how many sides the mesh should have.
-     */
-    static polygonIndices(n: number) {
-        // Create an array big enough to hold all the index tuples
-        let indices = IndexTupleBuffer.create(n - 2);
-        // Compute indices and add to array until it is full
-        let second = 1, third = 2;
-        while (indices.hasValidPosition()) {
-            indices.rset$(0, second, third);
-            second = third++
-        }
-        // Return the indices
-        return indices;
-    }
-
-    /**
-     * Creates the mesh for a rectangle
-     * @param id an optional id for the mesh.
-     */
-     static rectangle(rect: Rect, id?: string) {
-         // Extract the verties from the rect
-         let vertices = Mesh.rectVertices(rect);
-         // Indices are same as mesh(4)
-         let indices = Mesh.polygonIndices(4);
-         // Construct mesh and return
-         return new Mesh(vertices, indices, id, rect);
-     }
-
-    /**
-      * Extracts the vertices from the specified rect into a new vertex buffer.
-      * @param rect the rect from which to extract the vertices.
-      */
-     static rectVertices(rect: RectLike) {
-         return new VertexBuffer(
-             new Float32Array([
-                 rect.left, rect.top,
-                 rect.left, rect.bottom,
-                 rect.right, rect.bottom,
-                 rect.right, rect.top])
-         );
-      }
-
-    /**
-     * Creates the mesh for a star with n points and the specified inner and outer radii.
-     * @param n how many points the star should have.
-     * @param ratio ratio of the inner radius to the outer radius.
-     * @param id an optional id for the mesh.
-     */
-    static star(n: number, ratio: number, id?: string) {
-        // Generate the vertices
-        let vertices = Mesh.starVertices(n, ratio);
-        // Generate the indices
-        let indices = Mesh.starIndices(n);
-        //Construct the mesh and return
-        return new Mesh(vertices, indices, id);
-    }
-
-    /**
-     * Generates the vertices for a star centered at (0,0).
-     * @param points how many points the star should have.
-     * @param ratio ratio of the inner radius to the outer radius.
-     */
-    static starVertices(points: number, ratio: number) {
-        // Create vertex buffer big enough to hold the n inner vertices and n outer vertices
-        let vertices = VertexBuffer.create(points + points);
-        // Calculate the rotation angle
-        let angle = 2 * Math.PI / points;
-        // Create a rotation matrix
-        let rotation = new Mat2d();
-        // Translate the center point vertically by the
-        // outer radius to get the first outer vertex.
-        let outerVertex = Vec2Struct.create$(0, 1);
-        // Translate the center point vertically by the inner radius
-        // and rotate by half the angle to get the first inner vertex
-        let innerVertex = Vec2Struct.create$(0, ratio);
-        rotation.setRotate(0.5 * angle);
-        rotation.map(innerVertex, innerVertex);
-        // Add the first outer and inner vertices to the buffer
-        vertices.rset(outerVertex);
-        vertices.rset(innerVertex);
-        // Set the matrix to rotate by the full angle
-        rotation.setRotate(angle);
-        // Keep rotating the inner and outer vertices and
-        // adding them to the array until it is full.
-        while (vertices.hasValidPosition()) {
-            rotation.map(outerVertex, outerVertex);
-            rotation.map(innerVertex, innerVertex)
-            vertices.rset(outerVertex);
-            vertices.rset(innerVertex);
-        }
-        // Return the path
-        return vertices;
-    }
-
-
-    /**
-     * Generates the indices for a star with n points.
-     * The star will have 3*(n-2) inner indices and 3n outer indices.
-     * @param n how many points the star should have.
-     */
-    static starIndices(n: number) {
-        let innerIndexCount = n - 2;
-        let outerIndexCount = n;
-        // Create an array big enough to hold all the indices
-        let indices = IndexTupleBuffer.create(innerIndexCount + outerIndexCount);
-        // Compute inner indices and add to array
-        let first = 1, second = 3, third = 5;
-        while (innerIndexCount--) {
-            indices.rset$(first, second, third);
-            second = third++; third++;
-        }
-        // Computer outer indices and add to array
-        first = 2 * n - 1; second = 0; third = 1;
-        while (outerIndexCount--) {
-            indices.rset$(first, second, third);
-            first = third++; second = third++
-        }
-        // Return the indices
-        return indices;
     }
 
    /**
      * Checks if this mesh contains the specified point
-     * @param point the point to check.
+     * @param pt the point to check.
      */
-    contains(point: PointLike){
-        return this.bounds.contains(point) && this.vertices.contains(point);
+    contains(pt: PointLike){
+        return this.contains$(pt.x, pt.y);
     }
+
+
+   /**
+     * Checks if this mesh contains the point (x,y).
+     * @param x the x coordinate of the point.
+     * @param y the y coordinate of the point.
+     */
+    abstract contains$(x: number, y: number): boolean;
 
 }

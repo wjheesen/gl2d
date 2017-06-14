@@ -1,4 +1,4 @@
-import { MeshSpecification } from './specification';
+import { MeshSpecification } from './mesh';
 
 export interface StarSpecification extends MeshSpecification {
     points: number;

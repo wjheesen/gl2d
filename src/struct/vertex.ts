@@ -25,31 +25,86 @@ export class VertexBuffer extends Vec2Buffer {
     }
 
     /**
-     * Checks if a subset of vertices in this buffer contain the specified point.
-     * @param pt the point to check. 
-     * @param offset the offset of the first vertex in the subset.
-     * @param count the number of vertices in the subset.
+     * Checks if a polygon (specified by indices into this buffer) contains the specified point.
+     * @param pt the point to check.
+     * @param polygonIndices the indices for each of the polygons.
      */
-    contains(pt: PointLike, offset = 0, count = this.capacity() - offset) {
+    indexedContains(pt: PointLike, polygonIndices: number[]){
+        return this.indexedContains$(pt.x, pt.y, polygonIndices);
+    }
+
+    /**
+     * Checks if a polygon (specified by indices into this buffer) contains the specified point.
+     * @param x the x coordinate of the point to check.
+     * @param y the y coordinate of the point to check.
+     * @param polygonIndices the indices for each of the polygons.
+     */
+    indexedContains$(x: number, y: number, polygonIndices: number[]){
+
+        // Assume the point is not inside the polygon
+        let inside = false;
+
+        // Helper vars:
+        let prevX: number; let prevY: number;
+        let currX: number; let currY: number;
+        let vertexCount = polygonIndices.length;
+
+        // Get last point in subset
+        this.moveToPosition(polygonIndices[vertexCount - 1]);
+        prevX = this.x; prevY = this.y;
+
+        // Check point against each side of polygon
+        for(let i = 0; i<vertexCount; i++){
+            this.moveToPosition(polygonIndices[i]);
+            currX = this.x;  currY = this.y;
+            if(isInside(x,y, prevX, prevY, currX, currY)){
+                inside = !inside;
+            }
+            prevX = currX; prevY = currY;
+        }
+
+        return inside;
+    }
+
+    /**
+     * Checks if a polygon (specified by a subset of vertices in this buffer) contains the specified point.
+     * @param pt the point to check. 
+     * @param offset the offset of the first polygon vertex. Defaults to zero.
+     * @param count the number of polygon vertices. Defaults to the number of vertices in this buffer.
+     */
+    contains(pt: PointLike, offset?: number, count?: number) {
         return this.contains$(pt.x, pt.y, offset, count);
     }
 
     /**
-     * Checks if a subset of vertices in this buffer contain the point (x,y).
+     * Checks if a polygon (specified by a subset of vertices in this buffer) contains the specified point.
      * @param x the x coordinate of the point to check.
      * @param y the y coordinate of the point to check.
-     * @param offset the offset of the first vertex in the subset.
-     * @param count the number of vertices to include.
+     * @param offset the offset of the first polygon vertex. Defaults to zero.
+     * @param count the number of polygon vertices. Defaults to the number of vertices in this buffer.
      */
     contains$(x: number, y: number, offset = 0, count = this.capacity() - offset) {
+
         //Assume the point is not inside the subset
         let inside = false;
 
-        this.forEachEdge((x1, y1, x2, y2) => {
-            if ((y1 > y) !== (y2 > y) && x < (x2 - x1) * (y - y1) / (y2 - y1) + x1) {
-                inside = !inside;
+        // Helper vars:
+        let prevX: number; let prevY: number;
+        let currX: number; let currY: number;
+
+        // Get last point in subset
+        this.moveToPosition(offset + count - 1);
+        prevX = this.x; prevY = this.y;
+
+        // Check point against each side of polygon
+        while(count-- > 0){
+            this.moveToPosition(offset++);
+            currX = this.x; currY = this.y;
+            if(isInside(x, y, prevX, prevY, currX, currY)){
+                 inside = !inside; 
             }
-        }, offset, count);
+            prevX = currX; prevY = currY;
+        }
 
         return inside;
     }
@@ -59,7 +114,7 @@ export class VertexBuffer extends Vec2Buffer {
      * @param offset the offset of the first vertex.
      * @param count the number of vertices to include.
      */
-    offset(vec: Vec2Like, offset = 0, count = this.capacity() - offset) {
+    offset(vec: Vec2Like, offset?: number, count?: number) {
         this.offset$(vec.x, vec.y, offset, count);
     }
 
@@ -87,27 +142,8 @@ export class VertexBuffer extends Vec2Buffer {
     transform(matrix: Mat2d, offset = 0, count = this.capacity() - offset) {
         matrix.mapPoints$(this.data, offset * this.structLength());
     }
+}
 
-    /**
-     * Invokes the callback function on each of the specified edges of this vertex buffer. 
-     * @param callback the callback function.
-     * @param offset the offset of the first edge.
-     * @param count the number of edges to include. 
-     */
-    forEachEdge(callback: (x1: number, y1: number, x2: number, y2: number) => void, offset = 0, count = this.capacity() - offset) {
-        let data = this.data;
-        let dataIndex = offset * this.structLength();
-        let stoppingIndex = (offset + count) * this.structLength();
-        let startX = data[stoppingIndex - 2];
-        let startY = data[stoppingIndex - 1];
-        let endX: number;
-        let endY: number;
-        while (dataIndex < stoppingIndex) {
-            endX = data[dataIndex++];
-            endY = data[dataIndex++];
-            callback(startX, startY, endX, endY);
-            startX = endX;
-            startY = endY;
-        }
-    }
+function isInside(x: number, y: number, x1: number, y1: number, x2: number, y2: number){
+    return (y1 > y) !== (y2 > y) && x < (x2 - x1) * (y - y1) / (y2 - y1) + x1;
 }
