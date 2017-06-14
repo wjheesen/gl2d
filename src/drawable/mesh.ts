@@ -333,11 +333,11 @@ export class InstancedPolygonMesh extends Mesh {
 
     static spray(instance: PolygonMesh, instancesInInnerRing: number, rings: number, id?: string){
         // Create vertex buffer big enough to hold all the shapes in the spray
-        let vertices = instance.vertices;
-        let vertexCount = vertices.capacity();
+        let instanceVertices = instance.vertices;
+        let instanceVertexCount = instanceVertices.capacity();
         let instanceCount = InstancedPolygonMesh.countInstancesInSpray(instancesInInnerRing, rings);
-        let totalVertexCount = vertexCount * instanceCount;
-        let vertexBuffer = VertexBuffer.create(vertexCount * instanceCount);
+        let vertexCount = instanceVertexCount * instanceCount;
+        let vertices = VertexBuffer.create(instanceVertexCount * instanceCount);
 
         // Create helper variables for placing each shape in its ring
         let angle = 2 * Math.PI / instancesInInnerRing;
@@ -350,12 +350,12 @@ export class InstancedPolygonMesh extends Mesh {
         for(let ring = 0; ring < rings; ring++){
             for(let shapes = instancesInInnerRing << ring; shapes > 0; shapes--){
                 // Copy vertices into buffer
-                let offset = vertexBuffer.position();
-                vertices.moveToFirst();
-                vertexBuffer.putBuffer(vertices);
+                let offset = vertices.position();
+                instanceVertices.moveToFirst();
+                vertices.putBuffer(instanceVertices);
                 // Transform shape across line from p1 to p2
                 Shape.stretchAcrossLine(matrix, instance, p1, p2);
-                vertexBuffer.transform(matrix, offset, vertexCount);
+                vertices.transform(matrix, offset, instanceVertexCount);
                 // Position p1 and p2 for next shape in ring
                 rotation.map(p1, p1);
                 rotation.map(p2, p2);
@@ -368,21 +368,21 @@ export class InstancedPolygonMesh extends Mesh {
         }
 
         // Create index buffer big enough to hold all the indices
-        let indices = instance.triangleIndices;
-        let indexCount = indices.capacity();
-        let indexBuffer = IndexTupleBuffer.create(indexCount * instanceCount);
+        let instanceIndices = instance.triangleIndices;
+        let instanceTriangleCount = instanceIndices.capacity();
+        let indices = IndexTupleBuffer.create(instanceTriangleCount * instanceCount);
         
         // Copy indices repeatedly to buffer, offseting according to position
-        for(let offset = 0; offset<totalVertexCount; offset+= vertexCount){
-            indices.moveToPosition(-1);
-            while(indices.moveToNext()){
-                indexBuffer.set(indices);
-                indexBuffer.add$(offset,offset,offset);
-                indexBuffer.moveToNext();
+        for(let offset = 0; offset<vertexCount; offset+= instanceVertexCount){
+            instanceIndices.moveToPosition(-1);
+            while(instanceIndices.moveToNext()){
+                indices.set(instanceIndices);
+                indices.add$(offset,offset,offset);
+                indices.moveToNext();
             }
         }
 
-        return new InstancedPolygonMesh(vertices, vertexCount, indices, id);
+        return new InstancedPolygonMesh(vertices, instanceVertexCount, indices, id);
     }
     
     private static countInstancesInSpray(shapesInInnerRing: number, rings: number){
