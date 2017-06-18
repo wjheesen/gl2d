@@ -103,7 +103,9 @@ export class Shape extends Graphic {
      * @param stf the scale to fit option. Defaults to Fill.
      */
     mapToRect(dst: Rect, stf = ScaleToFit.Fill) {
-        this.matrix.setRectToRect(this.mesh.bounds, dst, stf);
+        let src = this.measureBoundaries();
+        let rectToRect = Mat2d.rectToRect(src, dst, stf);
+        this.matrix.postConcat(rectToRect);
     }
 
     /**
