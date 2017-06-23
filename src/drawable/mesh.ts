@@ -28,7 +28,7 @@ export abstract class Mesh {
     public vertices: VertexBuffer;
 
     /**
-     * The indices for each triangle in this mesh.
+     * The indices for each triangle in this mesh (if any).
      */
     public triangleIndices?: IndexTupleBuffer;
 
@@ -38,14 +38,24 @@ export abstract class Mesh {
     public bounds: Rect;
 
     /**
-     * The byte offset of this mesh's vertex data in a vertex buffer. Defaults to 0.
+     * The byte offset of this mesh's vertex data in a vertex buffer (if any).
      */
-    public vertexBufferOffset = 0;
+    public vertexBufferOffset?: number;
 
     /**
-     * The byte offset of this mesh's index data in an element buffer. Defaults to 0.
+     * The byte offset of this mesh's index data in an element buffer (if any).
      */
-    public elementBufferOffset = 0;
+    public elementBufferOffset?: number;
+
+    /**
+     * The byte offset of this mesh's stroke vertex data in a vertex buffer (if any).
+     */
+    public strokeVertexBufferOffset?: number;
+
+    /**
+     * The byte offset of this mesh's stroke index data in an element buffer (if any).
+     */
+    public strokeElementBufferOffset?: number;
 
     /**
      * Creates a mesh with the specified data.
