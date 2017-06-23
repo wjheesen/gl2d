@@ -1,4 +1,5 @@
-﻿import { MeshSpecification } from '../specification/mesh';
+﻿import { measureMiter } from '../math/miter';
+import { MeshSpecification } from '../specification/mesh';
 import { PolygonSpecification } from '../specification/polygon';
 import { RectangleSpecification } from '../specification/rectangle';
 import { SpraySpecification } from '../specification/spray';
@@ -7,7 +8,7 @@ import { IndexTupleBuffer } from '../struct/indextuple';
 import { Mat2d } from '../struct/mat2d';
 import { Point, PointLike } from '../struct/point';
 import { Rect, RectLike } from '../struct/rect';
-import { Vec2Struct } from '../struct/vec2';
+import { Vec2, Vec2Buffer, Vec2Struct } from '../struct/vec2';
 import { VertexBuffer } from '../struct/vertex';
 import { Shape } from './shape';
 
@@ -133,7 +134,8 @@ export abstract class Mesh {
             return mesh;
         }
     }
-    
+
+
    /**
      * Checks if this mesh contains the specified point
      * @param pt the point to check.
@@ -154,6 +156,54 @@ export abstract class Mesh {
 
 export class PolygonMesh extends Mesh {
 
+    miters: Vec2Buffer;
+
+    /**
+     * Creates a mesh with the specified data.
+     * @param vertices the mesh vertices.
+     * @param polygonIndices the indices for each polygon in the mesh.
+     * @param triangleIndices the indices for each triangle in the mesh.
+     * @param id an optional id for the mesh.
+     * @param bounds the boundaries of the mesh.
+     */
+    constructor(vertices: VertexBuffer, triangleIndices?: IndexTupleBuffer, id?: string, bounds?: Rect) {
+        super(vertices, triangleIndices, id, bounds);
+        this.miters = PolygonMesh.measureMiters(vertices);
+    }
+
+    static measureMiters(vertices: VertexBuffer, offset = 0, count = vertices.capacity() - offset){
+        let miters = Vec2Buffer.create(count);
+        let previous = new VertexBuffer(vertices.data);
+        let current = vertices;
+        let line1 = new Vec2();
+        let line2 = new Vec2();
+        let last = offset + count - 1;
+
+        // Ex: vertices (0 1 2), offset = 0, count = 3
+        // (2 0 1): miter(<2,0>, <0,1>)
+        // (0 1 2): miter(<0,1>, <1,2>)
+        // (1 2 0): miter(<1,2>, <2,0>)
+
+        previous.moveToPosition(last);                    // 2
+        current.moveToPosition(offset)                    // 0
+        line1.setFromPointToPoint(previous, current);     // <2,0>
+        previous.dataPosition = current.dataPosition;     // 0
+
+        for(let i = offset; i<last; i++){
+            current.moveToNext();                         // 1, 2
+            line2.setFromPointToPoint(previous, current); // <0,1>, <1,2>
+            miters.rset(measureMiter(line1, line2, 1, 3)) // miter(<2,0>, <0,1>), miter(<0,1>, <1,2>)
+            line1.set(line2);                             // <0,1>, <1,2>
+            previous.dataPosition = current.dataPosition; // 1, 2
+        }
+
+        current.moveToFirst();                            // 0
+        line2.setFromPointToPoint(previous, current);     // <2,0>
+        miters.rset(measureMiter(line1, line2, 1, 3))     // miter(<1,2>, <2,0>)
+
+        return miters;
+    }
+    
      /**
      * Creates the mesh for a regular polygon with n sides.
      * @param n how many sides the polygon should have.
@@ -352,7 +402,7 @@ export class InstancedPolygonMesh extends Mesh {
                 // Copy vertices into buffer
                 let offset = vertices.position();
                 instanceVertices.moveToFirst();
-                vertices.putBuffer(instanceVertices);
+                vertices.rsetFromBuffer(instanceVertices);
                 // Transform shape across line from p1 to p2
                 Shape.stretchAcrossLine(matrix, instance, p1, p2);
                 vertices.transform(matrix, offset, instanceVertexCount);
