@@ -525,12 +525,13 @@ export class MultiPolygonMesh extends Mesh {
 
         for(let indices of polygonIndices){
 
-            previous.moveToPosition(indices.length-1);          // [2], [4]             
+            let length = indices.length;
+            previous.moveToPosition(indices[length-1]);         // [2], [4]             
             current.moveToPosition(indices[0])                  // [0], [2]  
             line1.setFromPointToPoint(previous, current);       // [<2,0>], [<4,2>]
             previous.dataPosition = current.dataPosition;       // [0], [2]
 
-            for(let i = 1; i<indices.length; i++){
+            for(let i = 1; i<length; i++){
                 current.moveToPosition(indices[i]);             // [1, 2], [3, 4]           
                 line2.setFromPointToPoint(previous, current);   // [<0,1>, <1,2>], [<2,3>, <3,4>]
                 miters.rset(measureMiter(line1, line2, 1, 3))   // [[<2,0>, <0,1>], [<0,1>, <1,2>], [<4,2>, <2,3>], [<2,3>, <3,4>]]
