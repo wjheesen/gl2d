@@ -11,11 +11,11 @@ export function measureMiter(line1: Vec2Like, line2: Vec2Like, lineWidth: number
     // Measure the ortho norm of the previous vector and the next vector.
     let n1 = Vec2.create(line1);
     n1.normalize();
-    n1.rotateLeft();
+    n1.rotateRight();
     
     let n2 = Vec2.create(line2);
     n2.normalize();
-    n2.rotateLeft();
+    n2.rotateRight();
 
     // Average the ortho norms to get the miter vector.
     let miter = Vec2.create(n1);
