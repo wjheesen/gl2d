@@ -57,6 +57,11 @@ export abstract class Mesh {
      */
     public strokeElementBufferOffset?: number;
 
+   /**
+     * The byte offset of this mesh's miter data in an element buffer (if any).
+     */
+    public miterBufferOffset?: number;
+
     /**
      * Creates a mesh with the specified data.
      * @param vertices the mesh vertices.
@@ -180,7 +185,7 @@ export class PolygonMesh extends Mesh {
         super(vertices, triangleIndices, id, bounds);
         this.miters = PolygonMesh.measureMiters(vertices);
     }
-
+    
     static measureMiters(vertices: VertexBuffer, offset = 0, count = vertices.capacity() - offset){
         let miters = Vec2Buffer.create(count);
         let previous = new VertexBuffer(vertices.data);
@@ -213,7 +218,7 @@ export class PolygonMesh extends Mesh {
 
         return miters;
     }
-    
+
      /**
      * Creates the mesh for a regular polygon with n sides.
      * @param n how many sides the polygon should have.
@@ -446,7 +451,7 @@ export class InstancedPolygonMesh extends Mesh {
     }
     
     private static countInstancesInSpray(shapesInInnerRing: number, rings: number){
-        //Note: uses the formula for the sum of the first n terms of a geometric series:
+        //Note: uses the formula for the sum of the first n terms of a geometric series
         //(3,2) -> 3*1 + 3*2 = 3(2^0 + 2^1) = 3*(1-2^2)/(1-2) = 3*(-3/-1) = 3*3 = 9;
         //(3,3) -> 3*1 + 3*2 + 3*4 = 3(2^0 + 2^1 + 2^2) = 3*(1-2^3)/(1-2) = 3*(-7/-1) = 21;
         //(m,n) -> m*2^0 + ... + m*2^(n-1) = m*(1-2^n)/(1-2) = m*(1-2^n)/(-1) = m*(2^n - 1)
@@ -487,6 +492,43 @@ export class MultiPolygonMesh extends Mesh {
     constructor(vertices: VertexBuffer, polygonIndices?: number[][], triangleIndices?: IndexTupleBuffer, id?: string, bounds?: Rect) {
         super(vertices, triangleIndices, id, bounds);
         this.polygonIndices = polygonIndices;
+    }
+
+    static measureMiters(vertices: VertexBuffer, polygonIndices: number[][]){
+        let count = 0;
+        for(let indices of polygonIndices){
+            count += indices.length;
+        }
+
+        let miters = Vec2Buffer.create(count);
+        let previous = new VertexBuffer(vertices.data);
+        let current = vertices;
+        let line1 = new Vec2();
+        let line2 = new Vec2();
+        let last: number;
+
+        for(let indices of polygonIndices){
+
+            last = indices.length - 1;
+            previous.moveToPosition(indices[last]);                    
+            current.moveToPosition(indices[0])                    
+            line1.setFromPointToPoint(previous, current);     
+            previous.dataPosition = current.dataPosition;     
+
+            for(let i = 1; i<last; i++){
+                current.moveToPosition(indices[i]);                       
+                line2.setFromPointToPoint(previous, current); 
+                miters.rset(measureMiter(line1, line2, 1, 3)) 
+                line1.set(line2);                             
+                previous.dataPosition = current.dataPosition; 
+            }
+
+            current.moveToPosition(indices[0]);                           
+            line2.setFromPointToPoint(previous, current);     
+            miters.rset(measureMiter(line1, line2, 1, 3))     
+        }
+
+        return miters;
     }
 
     contains$(x: number, y: number){
