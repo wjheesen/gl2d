@@ -69,14 +69,6 @@ class Vec2 extends Template<Float32Array> {
     }
 
     /**
-     * Normalizes this Vec2 and rotates it 90 degrees to the left, so that it is orthogonal to the original Vec2.
-     */
-    orthoNormalize(){
-        this.normalize();
-        this.rotateLeft();
-    }
-
-    /**
      * Rotates this Vec2 90 degrees to the left (CCW).
      */
     rotateLeft() {

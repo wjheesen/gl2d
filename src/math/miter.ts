@@ -1,7 +1,7 @@
 import { Vec2, Vec2Like } from '../struct/vec2';
 
 /**
- * Measures the miter vector needed to join the two specified lines.
+ * Measures the miter vector needed to join the two specified lines. Assumes the lines are measured from points listed in CCW order.
  * @param line1 The nonzero vector from the start of the first line to the end of the first line. Will not be modified.
  * @param line2 The nonzero vector from the start of the second line to the end of the second line. Will not be modified.
  * @param lineWidth The width of the second line (or half the width, if joining at the center of the lines).
@@ -10,10 +10,12 @@ import { Vec2, Vec2Like } from '../struct/vec2';
 export function measureMiter(line1: Vec2Like, line2: Vec2Like, lineWidth: number, miterLimit: number){
     // Measure the ortho norm of the previous vector and the next vector.
     let n1 = Vec2.create(line1);
-    n1.orthoNormalize();
+    n1.normalize();
+    n1.rotateLeft();
     
     let n2 = Vec2.create(line2);
-    n2.orthoNormalize();
+    n2.normalize();
+    n2.rotateLeft();
 
     // Average the ortho norms to get the miter vector.
     let miter = Vec2.create(n1);
