@@ -33,6 +33,11 @@ export abstract class Mesh {
     public triangleIndices?: IndexTupleBuffer;
 
     /**
+     * The miter vectors used to draw an outline of this mesh (if any).
+     */
+    public miters?: Vec2Buffer;
+
+    /**
      * The smallest rect containing each mesh vertex.
      */
     public bounds: Rect;
@@ -170,8 +175,6 @@ export abstract class Mesh {
 }
 
 export class PolygonMesh extends Mesh {
-
-    miters: Vec2Buffer;
 
     /**
      * Creates a mesh with the specified data.
@@ -489,9 +492,10 @@ export class MultiPolygonMesh extends Mesh {
      * @param id an optional id for the mesh.
      * @param bounds the boundaries of the mesh.
      */
-    constructor(vertices: VertexBuffer, polygonIndices?: number[][], triangleIndices?: IndexTupleBuffer, id?: string, bounds?: Rect) {
+    constructor(vertices: VertexBuffer, polygonIndices: number[][], triangleIndices?: IndexTupleBuffer, id?: string, bounds?: Rect) {
         super(vertices, triangleIndices, id, bounds);
         this.polygonIndices = polygonIndices;
+        this.miters = MultiPolygonMesh.measureMiters(vertices, polygonIndices);
     }
 
     static measureMiters(vertices: VertexBuffer, polygonIndices: number[][]){
