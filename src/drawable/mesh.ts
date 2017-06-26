@@ -62,6 +62,11 @@ export abstract class Mesh {
      */
     public strokeElementBufferOffset?: number;
 
+    /**
+     * The number of indices used to render the stroke (if any).
+     */
+    public strokeElementCount?: number;
+
    /**
      * The byte offset of this mesh's miter data in an element buffer (if any).
      */
@@ -499,9 +504,17 @@ export class MultiPolygonMesh extends Mesh {
     }
 
     static measureMiters(vertices: VertexBuffer, polygonIndices: number[][]){
+        // Ex: vertices = [0 1 2 3 4], polygonIndices = [[0,1,2], [2,3,4]]
+        // (2 0 1): miter(<2,0>, <0,1>)
+        // (0 1 2): miter(<0,1>, <1,2>)
+        // (1 2 0): miter(<1,2>, <2,0>)
+        // (4 2 3): miter(<4,2>, <2,3>)
+        // (2 3 4): miter(<2,3>, <3,4>)
+        // (3 4 2): miter(<3,4>, <4,2>)
+
         let count = 0;
         for(let indices of polygonIndices){
-            count += indices.length;
+            count += indices.length;                            // 3, 6    
         }
 
         let miters = Vec2Buffer.create(count);
@@ -509,27 +522,25 @@ export class MultiPolygonMesh extends Mesh {
         let current = vertices;
         let line1 = new Vec2();
         let line2 = new Vec2();
-        let last: number;
 
         for(let indices of polygonIndices){
 
-            last = indices.length - 1;
-            previous.moveToPosition(indices[last]);                    
-            current.moveToPosition(indices[0])                    
-            line1.setFromPointToPoint(previous, current);     
-            previous.dataPosition = current.dataPosition;     
+            previous.moveToPosition(indices.length-1);          // [2], [4]             
+            current.moveToPosition(indices[0])                  // [0], [2]  
+            line1.setFromPointToPoint(previous, current);       // [<2,0>], [<4,2>]
+            previous.dataPosition = current.dataPosition;       // [0], [2]
 
-            for(let i = 1; i<last; i++){
-                current.moveToPosition(indices[i]);                       
-                line2.setFromPointToPoint(previous, current); 
-                miters.rset(measureMiter(line1, line2, 1, 3)) 
-                line1.set(line2);                             
-                previous.dataPosition = current.dataPosition; 
+            for(let i = 1; i<indices.length; i++){
+                current.moveToPosition(indices[i]);             // [1, 2], [3, 4]           
+                line2.setFromPointToPoint(previous, current);   // [<0,1>, <1,2>], [<2,3>, <3,4>]
+                miters.rset(measureMiter(line1, line2, 1, 3))   // [[<2,0>, <0,1>], [<0,1>, <1,2>], [<4,2>, <2,3>], [<2,3>, <3,4>]]
+                line1.set(line2);                               // [<0,1>, <1,2>], [<2,3>, <3,4>]
+                previous.dataPosition = current.dataPosition;   // [1, 2], [3, 4]
             }
 
-            current.moveToPosition(indices[0]);                           
-            line2.setFromPointToPoint(previous, current);     
-            miters.rset(measureMiter(line1, line2, 1, 3))     
+            current.moveToPosition(indices[0]);                 // [0], [2]          
+            line2.setFromPointToPoint(previous, current);       // [<2,0>], [4,2]
+            miters.rset(measureMiter(line1, line2, 1, 3))       // [<1,2>, <2,0>], [<3,4>, <4,2>]
         }
 
         return miters;
